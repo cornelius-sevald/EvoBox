@@ -19,6 +19,9 @@ namespace evobox {
                     SCREEN_WIDTH, SCREEN_HEIGHT);
             Renderer renderer = new Renderer(window);
 
+            Surface icon = new Surface("EvoBoxIcon.png");
+            window.SetWindowIcon(icon);
+
             Texture jumpmanSprite = new Texture(renderer, "Jumpman.png");
 
             bool quit = false;
