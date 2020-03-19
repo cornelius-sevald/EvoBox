@@ -1,3 +1,4 @@
+
 # From https://raw.githubusercontent.com/github/gitignore/master/Global/VisualStudioCode.gitignore
 .vscode/*
 !.vscode/settings.json
@@ -361,3 +362,5 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/csharp
+
+!dlls/**
