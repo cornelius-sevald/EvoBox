@@ -8,11 +8,16 @@ namespace evobox {
     public struct Vector2 {
         public double x, y;
 
+        /// <summary>
+        /// Construct a new vector with a x and y coordinate.
+        /// </summary>
         public Vector2(double x, double y) {
             this.x = x;
             this.y = y;
         }
 
+        public static Vector2 zero = new Vector2(0, 0);
+        public static Vector2 one = new Vector2(1, 1);
         public static Vector2 up = new Vector2(0, 1);
         public static Vector2 down = new Vector2(0, -1);
         public static Vector2 left = new Vector2(-1, 0);
