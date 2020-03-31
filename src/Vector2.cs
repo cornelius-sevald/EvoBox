@@ -23,6 +23,10 @@ namespace evobox {
         public static Vector2 left = new Vector2(-1, 0);
         public static Vector2 right = new Vector2(1, 0);
 
+        public static Vector2 FromAngle(double angle) {
+            return new Vector2(Math.Cos(angle), Math.Sin(angle));
+        }
+
         /// <summary>
         /// The squared length of this vector.
         /// </summary>
@@ -71,6 +75,13 @@ namespace evobox {
             }
         }
 
+        public void Rotate(double angle) {
+            double x0 = x, y0 = y;
+            double ca = Math.Cos(angle), sa = Math.Sin(angle);
+            x = ca * x0 - sa * y0;
+            y = sa * x0 + ca * y0;
+        }
+
         public override string ToString() {
             return "(" + x + ", " + y + ")";
         }
@@ -96,6 +107,10 @@ namespace evobox {
         /// </summary>
         public static Vector2 operator *(Vector2 v, double a) =>
             new Vector2(v.x * a, v.y * a);
+        /// <summary>
+        /// Scale a vector.
+        /// </summary>
+        public static Vector2 operator *(double a, Vector2 v) => v * a;
         /// <summary>
         /// Inverse scale a vector.
         /// </summary>
