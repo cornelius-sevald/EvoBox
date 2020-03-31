@@ -3,10 +3,10 @@ namespace evobox {
     /// <summary>
     /// Position and scale of an object.
     /// </summary>
-    public struct Transform {
+    public class Transform {
 
-        public Vector2 position { get; set; }
-        public Vector2 scale { get; set; }
+        public Vector2 position;
+        public Vector2 scale;
 
         /// <summary>
         /// Construct a new transform given a position and scale.
