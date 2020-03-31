@@ -27,18 +27,12 @@ namespace evobox {
             // Random number generation.
             Random rand = new Random();
 
-            // Create some random jumpmen.
+            // Create a jumpman.
             Texture jumpmanSprite = new Texture(renderer, "Jumpman.png");
-            List<Entity> jumpmen = new List<Entity>();
-            for (int i = 0; i < 5; i++) {
-                Vector2 pos = new Vector2(rand.NextDouble(), rand.NextDouble());
-                Vector2 scale = new Vector2(rand.NextDouble(), rand.NextDouble());
-                Jumpman randJumpman = new Jumpman(pos, scale, jumpmanSprite, rand.Next());
-                jumpmen.Add(randJumpman);
-            }
+            Entity jumpman = new Jumpman(jumpmanSprite, 1, new Random(rand.Next()));
 
             // Create a camera centered on the jumpmen.
-            Camera camera = new Camera(Vector2.one * 0.5, 2, 2);
+            Camera camera = new Camera(Vector2.zero, 10, 10);
 
             // Main loop.
             bool quit = false;
@@ -54,15 +48,12 @@ namespace evobox {
                 renderer.Color = Color.white;
                 renderer.Clear();
 
-                // Update the jumpmen.
-                foreach (Jumpman jumpman in jumpmen) {
-                    // Constant frame rate. Does not really matter.
-                    jumpman.Update(1.0 / 60.0);
-                }
+                // Update the jumpman.
+                jumpman.Update(1.0 / 60.0);
 
                 // Draw the jumpmen.
                 Rect drawRect = renderer.OutputRect();
-                camera.Draw(renderer, drawRect, jumpmen);
+                camera.Draw(renderer, drawRect, jumpman);
 
                 renderer.Present();
             }
