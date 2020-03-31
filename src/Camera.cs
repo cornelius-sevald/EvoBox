@@ -37,7 +37,7 @@ namespace evobox {
             }
         }
 
-        private void Draw(Renderer renderer, Rect drawRect, Entity entity) {
+        public void Draw(Renderer renderer, Rect drawRect, Entity entity) {
             double xc = transform.position.x;           // Camera X position
             double yc = transform.position.y;           // Camera Y position
             double wc = width;                          // Camera width.
