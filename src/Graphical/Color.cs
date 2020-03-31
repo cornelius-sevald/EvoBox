@@ -8,6 +8,16 @@ namespace evobox.Graphical {
     /// Simple RGBA color representation
     /// </summary>
     public struct Color {
+
+        public static Color white = new Color(0xFFFFFFFF);
+        public static Color cyan = new Color(0x00FFFFFF);
+        public static Color magenta = new Color(0xFF00FFFF);
+        public static Color yellow = new Color(0xFFFF00FF);
+        public static Color red = new Color(0xFF0000FF);
+        public static Color green = new Color(0x00FF000F);
+        public static Color blue = new Color(0x0000FFFF);
+        public static Color black = new Color(0x000000FF);
+
         public byte R { get; set; }
         public byte G { get; set; }
         public byte B { get; set; }
