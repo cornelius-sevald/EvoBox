@@ -51,6 +51,7 @@ namespace evobox {
                     }
                 }
 
+                renderer.Color = Color.white;
                 renderer.Clear();
 
                 // Update the jumpmen.

@@ -17,6 +17,17 @@ namespace evobox.Graphical {
         /// </summary>
         public IntPtr RenPtr { get; private set; }
 
+        public Color Color {
+            get {
+                byte r, g, b, a;
+                SDL.SDL_GetRenderDrawColor(RenPtr, out r, out g, out b, out a);
+                return new Color(r, g, b, a);
+            }
+            set {
+                SDL.SDL_SetRenderDrawColor(RenPtr, value.R, value.G, value.B, value.A);
+            }
+        }
+
         /// <summary>
         /// Construct a new renderer with an associated window
         /// </summary>
@@ -30,7 +41,7 @@ namespace evobox.Graphical {
                 throw new SDLException("SDL_CreateRenderer");
             }
 
-            SDL.SDL_SetRenderDrawBlendMode (renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+            SDL.SDL_SetRenderDrawBlendMode(renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
             RenPtr = renderer;
         }
 
@@ -55,13 +66,6 @@ namespace evobox.Graphical {
         /// </summary>
         public void Present() {
             SDL.SDL_RenderPresent(RenPtr);
-        }
-
-        /// <summary>
-        /// Set the rendering color
-        /// </summary>
-        public void SetColor(Color color) {
-            SDL.SDL_SetRenderDrawColor(RenPtr, color.R, color.G, color.B, color.A);
         }
 
         /// <summary>
