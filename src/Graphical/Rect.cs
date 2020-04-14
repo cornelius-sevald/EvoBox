@@ -37,6 +37,16 @@ namespace evobox.Graphical {
         }
 
         /// <summary>
+        /// Turn a rectangle into a square.
+        /// </summary>
+        public Rect Square() {
+            int s = Math.Min(W, H);
+            int x = (int) (X + (W - s) / 2.0);
+            int y = (int) (Y + (H - s) / 2.0);
+            return new Rect(x, y, s, s);
+        }
+
+        /// <summary>
         /// Get a SDL_Rect struct from this rectangle
         /// </summary>
         /// <value>A SDL_Rect struct</value>

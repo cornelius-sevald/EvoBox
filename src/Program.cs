@@ -45,14 +45,19 @@ namespace evobox {
                     }
                 }
 
-                renderer.Color = Color.white;
-                renderer.Clear();
-
                 // Update the jumpman.
                 jumpman.Update(1.0 / 60.0);
 
-                // Draw the jumpmen.
-                Rect drawRect = renderer.OutputRect();
+                // Clear the screen.
+                renderer.Color = Color.black;
+                renderer.Clear();
+
+                // Fill the draw area
+                renderer.Color = Color.white;
+                Rect drawRect = renderer.OutputRect().Square();
+                renderer.FillRect(drawRect);
+
+                // Draw the jumpman.
                 camera.Draw(renderer, drawRect, jumpman);
 
                 renderer.Present();
