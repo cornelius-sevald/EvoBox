@@ -22,7 +22,7 @@ namespace evobox.Graphical {
         /// <param name="ptsize">The point size of the font</param>
         public Font(string name, int ptsize) {
             // Construct the full path
-            string path = Path.Combine(Graphics.RESOURCE_PATH, name);
+            string path = Path.Combine(Globals.RESOURCE_PATH, name);
 
             // Load the font
             IntPtr font = SDL_ttf.TTF_OpenFont(path, ptsize);

@@ -14,14 +14,6 @@ namespace evobox.Graphical {
     public static class Graphics {
 
         /// <summary>
-        /// The path to the resource folder.
-        ///
-        /// <para>This is where all textures, fonts, etc.
-        /// be located</para>
-        /// </summary>
-        public const string RESOURCE_PATH = "resources/";
-
-        /// <summary>
         /// A pure white color
         /// </summary>
         public static Color white = new Color(0xFFFFFFFF);

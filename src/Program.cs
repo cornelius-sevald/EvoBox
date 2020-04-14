@@ -11,8 +11,6 @@ namespace evobox {
         private const int SCREEN_WIDTH = 800;
         private const int SCREEN_HEIGHT = 800;
 
-        private const string RESOURCE_PATH = "resources/";
-
         static void Main(string[] args) {
 
             // Initialize graphics, create window & renderer etc.
@@ -21,6 +19,9 @@ namespace evobox {
                     SCREEN_WIDTH, SCREEN_HEIGHT);
             Renderer renderer = new Renderer(window);
 
+            Globals.WINDOW = window;
+            Globals.RENDERER = renderer;
+
             Surface icon = new Surface("EvoBoxIcon.png");
             window.SetWindowIcon(icon);
 
@@ -28,8 +29,7 @@ namespace evobox {
             Random rand = new Random();
 
             // Create a jumpman.
-            Texture jumpmanSprite = new Texture(renderer, "Jumpman.png");
-            Entity jumpman = new Jumpman(jumpmanSprite, 1, new Random(rand.Next()));
+            Entity jumpman = new Jumpman(1, new Random(rand.Next()));
 
             // Create a camera centered on the jumpmen.
             Camera camera = new Camera(Vector2.zero, 10, 10);

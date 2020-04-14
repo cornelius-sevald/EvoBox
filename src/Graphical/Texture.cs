@@ -25,7 +25,7 @@ namespace evobox.Graphical {
         /// <param name="name">The path to the image from the resource folder</param>
         public Texture(Renderer renderer, string name) {
             // Construct the full path
-            string path = Path.Combine(Graphics.RESOURCE_PATH, name);
+            string path = Path.Combine(Globals.RESOURCE_PATH, name);
 
             IntPtr texture = SDL_image.IMG_LoadTexture(renderer.RenPtr, path);
             if (texture == IntPtr.Zero) {

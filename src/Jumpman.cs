@@ -8,25 +8,47 @@ namespace evobox {
     /// </summary>
     public class Jumpman : Entity {
 
+        const string RIGHT_TEXTURE_NAME = "sprites/jumpman_right.png";
+        const string LEFT_TEXTURE_NAME  = "sprites/jumpman_left.png";
+        const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
+
         public Vector2 velocity;
 
+        private Texture[] sprites;
         private Random rand;
         private double speed = 3.0;
         private double turnSpeed = 4.0;
+
+        public override Texture texture {
+            get {
+                if (velocity.x > 0) {
+                    return sprites[0];
+                } else if (velocity.x < 0) {
+                    return sprites[1];
+                } else {
+                    return sprites[2];
+                }
+            }
+        }
 
         /// <summary>
         /// Construct a new jumpman with a scale of (1, 1) centered at (0, 0).
         /// </summary>
         /// <param name="rand">A RNG used for random movement.</param>
-        public Jumpman(Texture texture, int zIndex, Random rand)
-            : this(Vector2.zero, Vector2.one, texture, zIndex, rand) { }
+        public Jumpman(int zIndex, Random rand)
+            : this(Vector2.zero, Vector2.one, zIndex, rand) { }
 
         /// <summary>
         /// Construct a new jumpman.
         /// </summary>
         /// <param name="rand">A RNG used for random movement.</param>
-        public Jumpman(Vector2 position, Vector2 scale, Texture texture, int zIndex, Random rand)
-            : base(position, scale, texture, zIndex) {
+        public Jumpman(Vector2 position, Vector2 scale, int zIndex, Random rand)
+            : base(position, scale, zIndex) {
+            this.sprites = new Texture[] {
+                new Texture(Globals.RENDERER, RIGHT_TEXTURE_NAME),
+                new Texture(Globals.RENDERER, LEFT_TEXTURE_NAME),
+                new Texture(Globals.RENDERER, FRONT_TEXTURE_NAME)
+            };
             this.rand = rand;
             this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
         }
