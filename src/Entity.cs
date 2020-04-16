@@ -9,7 +9,7 @@ namespace evobox {
 
         public int zIndex;
 
-        public virtual Texture texture { get; }
+        public virtual Texture texture { get; protected set; }
 
         /// <summary>
         /// Construct a new entity given a position, scale, texture and z index.
