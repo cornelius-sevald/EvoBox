@@ -10,9 +10,9 @@ namespace evobox
     public class Food : Entity
     {
 
-        const string FOOD_NAME = "sprites/foodTomato.png";
-        const string FOOD_SMALL_NAME = "sprites/foodKetchupSmall.png";
-        const string FOOD_BIG_NAME = "sprites/foodKetchupLarge.png";
+        const string FOOD_NAME = "sprites/food_tomato.png";
+        const string FOOD_SMALL_NAME = "sprites/food_ketchup_small.png";
+        const string FOOD_BIG_NAME = "sprites/food_ketchup_large.png";
 
         private double nutrition = 0;
 
