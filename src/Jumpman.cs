@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using evobox.Graphical;
+using evobox.Genetic;
 
 namespace evobox {
 
@@ -11,6 +13,7 @@ namespace evobox {
         const string RIGHT_TEXTURE_NAME = "sprites/jumpman_right.png";
         const string LEFT_TEXTURE_NAME  = "sprites/jumpman_left.png";
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
+        const int GENOME_LENGTH = 24;
 
         public Vector2 velocity;
 
@@ -18,6 +21,7 @@ namespace evobox {
         private Random rand;
         private double speed = 3.0;
         private double turnSpeed = 4.0;
+        private Genome genome;
 
         public override Texture texture {
             get {
@@ -51,6 +55,9 @@ namespace evobox {
             };
             this.rand = rand;
             this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
+
+            this.genome = Genome.RandomGenome(GENOME_LENGTH, rand);
+            SetColor();
         }
 
 
@@ -76,6 +83,19 @@ namespace evobox {
                 velocity.y *= -1;
             }
         }
-    }
 
+        /// <summary>
+        /// Change the color of the jumpman based on his genes.
+        /// </summary>
+        private void SetColor() {
+            byte[] rgb = new byte[3];
+            BitArray bits = genome.Slice(0, 24);
+
+            bits.CopyTo(rgb, 0);
+            Color c = new Color(rgb[0], rgb[1], rgb[2]);
+            foreach (Texture t in sprites) {
+                t.SetColorMod(c);
+            }
+        }
+    }
 }

@@ -50,6 +50,27 @@ namespace evobox.Graphical {
         }
 
         /// <summary>
+        /// Set an additional color value multiplied into render copy operations.
+        /// </summary>
+        public void SetColorMod(Color c) {
+            SDL.SDL_SetTextureColorMod(
+                TexPtr,
+                c.R,
+                c.G,
+                c.B
+            );
+        }
+
+        /// <summary>
+        /// Get the additional color value multiplied into render copy operations.
+        /// </summary>
+        public Color GetColorMod() {
+            byte r, g, b;
+            SDL.SDL_GetTextureColorMod(TexPtr, out r, out g, out b);
+            return new Color(r, g, b);
+        }
+
+        /// <summary>
         /// Get the width and height of the texture
         /// </summary>
         /// <param name="w">The width of the texture</param>

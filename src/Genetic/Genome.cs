@@ -63,6 +63,14 @@ namespace evobox.Genetic {
             return genes.GetEnumerator();
         }
 
+        public BitArray Slice(int start, int length) {
+            var bits = new bool[Count];
+            genes.CopyTo(bits, 0);
+            var slice = new bool[length];
+            Array.Copy(bits, start, slice, 0, length);
+            return new BitArray(slice);
+        }
+
         /// <summary>
         /// Mutate a genome by randomly flipping bits.
         /// </summary>
