@@ -31,6 +31,9 @@ namespace evobox {
             // Create a jumpman.
             Entity jumpman = new Jumpman(1, new Random(rand.Next()));
 
+            // Create a nice meal.
+            Entity food = new Food(Vector2.one, Vector2.one * 0.5, 2, 1);
+
             // Create a camera centered on the jumpmen.
             Camera camera = new Camera(Vector2.zero, 10, 10);
 
@@ -59,6 +62,9 @@ namespace evobox {
 
                 // Draw the jumpman.
                 camera.Draw(renderer, drawRect, jumpman);
+
+                // Draw the food.
+                camera.Draw(renderer, drawRect, food);
 
                 renderer.Present();
             }
