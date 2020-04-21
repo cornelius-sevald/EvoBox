@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace evobox {
     public class Environment : SceneObject {
+
+        const double MIN_FOOD_NUTRITION = 4;
+        const double MAX_FOOD_NUTRITION = 16;
 
         /// <summary>
         /// All of the jumpmen in this environment.
@@ -30,16 +34,24 @@ namespace evobox {
         }
 
         /// <summary>
+        /// The chance of food spawning.
+        /// </summary>
+        private double foodSpawnRate = 1;
+        private Random rand;
+
+        /// <summary>
         /// Create a new environment with a given size centered at (0, 0).
         /// </summary>
         /// <param name="width">The width of the environment.</param>
         /// <param name="height">The height of the environment.</param>
-        public Environment(double width, double height)
+        public Environment(double width, double height, Random rand)
             : base(Vector2.zero, new Vector2(width, height)) {
             jumpmen = new List<Jumpman>();
             food = new List<Food>();
             sceneObjects = new List<SceneObject>();
             entities = new List<Entity>();
+
+            this.rand = rand;
         }
 
         /// <summary>
@@ -83,9 +95,23 @@ namespace evobox {
         /// </summary>
         /// <param name="deltaTime">The time in seconds since the last frame.</param>
         public override void Update(double deltaTime) {
+            if (rand.NextDouble() < foodSpawnRate * deltaTime) {
+                SpawnFood();
+            }
+
             foreach (SceneObject sceneObject in sceneObjects) {
                 sceneObject.Update(deltaTime);
             }
+        }
+
+        private void SpawnFood() {
+            double nutrition = rand.NextDouble() * (MAX_FOOD_NUTRITION - MIN_FOOD_NUTRITION) + MIN_FOOD_NUTRITION;
+            double xPos = (0.5 - rand.NextDouble()) * transform.scale.x - transform.position.x;
+            double yPos = (0.5 - rand.NextDouble()) * transform.scale.y - transform.position.y;
+            Vector2 pos = new Vector2(xPos, yPos);
+
+            Food food = new Food(pos, nutrition);
+            AddObject(food);
         }
     }
 }

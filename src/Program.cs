@@ -29,16 +29,11 @@ namespace evobox {
             Random rand = new Random();
 
             // Create the environment.
-            Environment env = new Environment(15, 15);
+            Environment env = new Environment(15, 15, new Random(rand.Next()));
 
             // Add a jumpman to the environment.
             env.AddObject(
                 new Jumpman(new Random(rand.Next()))
-            );
-
-            // Add a nice meal to the environment.
-            env.AddObject(
-                new Food(Vector2.one, 2)
             );
 
             // Create a camera centered at (0, 0).
