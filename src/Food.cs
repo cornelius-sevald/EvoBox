@@ -19,8 +19,7 @@ namespace evobox {
         /// Create food with a certain nutritional value.
         /// </summary>
         public Food(Vector2 position, double nutrition)
-            : base(position, Vector2.one * 0.5, Z_INDEX)
-        {
+            : base(position, Vector2.one * 0.5, Z_INDEX) {
             this.nutrition = nutrition;
 
             if (nutrition < 5) {

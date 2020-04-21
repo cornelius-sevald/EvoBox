@@ -11,7 +11,7 @@ namespace evobox {
     public class Jumpman : Entity {
 
         const string RIGHT_TEXTURE_NAME = "sprites/jumpman_right.png";
-        const string LEFT_TEXTURE_NAME  = "sprites/jumpman_left.png";
+        const string LEFT_TEXTURE_NAME = "sprites/jumpman_left.png";
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
         const int Z_INDEX = 0;
         const int GENOME_LENGTH = 24;
@@ -49,8 +49,7 @@ namespace evobox {
         /// </summary>
         /// <param name="rand">A RNG used for random movement.</param>
         public Jumpman(Vector2 position, Random rand)
-            : base(position, Vector2.one, Z_INDEX)
-        {
+            : base(position, Vector2.one, Z_INDEX) {
             this.sprites = new Texture[] {
                 new Texture(Globals.RENDERER, RIGHT_TEXTURE_NAME),
                 new Texture(Globals.RENDERER, LEFT_TEXTURE_NAME),
