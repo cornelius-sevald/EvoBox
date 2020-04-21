@@ -28,14 +28,21 @@ namespace evobox {
             // Random number generation.
             Random rand = new Random();
 
-            // Create a jumpman.
-            Entity jumpman = new Jumpman(1, new Random(rand.Next()));
+            // Create the environment.
+            Environment env = new Environment(15, 15);
 
-            // Create a nice meal.
-            Entity food = new Food(Vector2.one, Vector2.one * 0.5, 2, 1);
+            // Add a jumpman to the environment.
+            env.AddObject(
+                new Jumpman(1, new Random(rand.Next()))
+            );
 
-            // Create a camera centered on the jumpmen.
-            Camera camera = new Camera(Vector2.zero, 10, 10);
+            // Add a nice meal to the environment.
+            env.AddObject(
+                new Food(Vector2.one, Vector2.one * 0.5, 2, 1)
+            );
+
+            // Create a camera centered at (0, 0).
+            Camera camera = new Camera(Vector2.zero, 15, 15);
 
             // Main loop.
             bool quit = false;
@@ -48,8 +55,8 @@ namespace evobox {
                     }
                 }
 
-                // Update the jumpman.
-                jumpman.Update(1.0 / 60.0);
+                // Update the environment.
+                env.Update(1.0 / 60.0);
 
                 // Clear the screen.
                 renderer.Color = Color.black;
@@ -60,11 +67,8 @@ namespace evobox {
                 Rect drawRect = renderer.OutputRect().Square();
                 renderer.FillRect(drawRect);
 
-                // Draw the jumpman.
-                camera.Draw(renderer, drawRect, jumpman);
-
-                // Draw the food.
-                camera.Draw(renderer, drawRect, food);
+                // Draw the entities in the scene.
+                camera.Draw(renderer, drawRect, env.entities);
 
                 renderer.Present();
             }

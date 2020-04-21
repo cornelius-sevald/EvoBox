@@ -16,6 +16,7 @@ namespace evobox {
         const int GENOME_LENGTH = 24;
 
         public Vector2 velocity;
+        public Environment environment;
 
         private Texture[] sprites;
         private Random rand;
@@ -66,20 +67,24 @@ namespace evobox {
             velocity.Rotate(angle);
             this.transform.Translate(velocity * deltaTime);
 
+            double minX = -environment.width / 2;
+            double maxX = environment.width / 2;
+            double minY = -environment.height / 2;
+            double maxY = environment.height / 2;
             // Bounce jumpman if he is out of bounds.
-            if (transform.position.x - transform.scale.x / 2 < -5) {
-                transform.position.x = -5 + transform.scale.x / 2;
+            if (transform.position.x - transform.scale.x / 2 < minX) {
+                transform.position.x = minX + transform.scale.x / 2;
                 velocity.x *= -1;
-            } else if (transform.position.x + transform.scale.x / 2 > 5) {
-                transform.position.x = 5 - transform.scale.x / 2;
+            } else if (transform.position.x + transform.scale.x / 2 > maxX) {
+                transform.position.x = maxX - transform.scale.x / 2;
                 velocity.x *= -1;
             }
 
-            if (transform.position.y - transform.scale.y / 2 < -5) {
-                transform.position.y = -5 + transform.scale.y / 2;
+            if (transform.position.y - transform.scale.y / 2 < minY) {
+                transform.position.y = minY + transform.scale.y / 2;
                 velocity.y *= -1;
-            } else if (transform.position.y + transform.scale.y / 2 > 5) {
-                transform.position.y = 5 - transform.scale.y / 2;
+            } else if (transform.position.y + transform.scale.y / 2 > maxY) {
+                transform.position.y = maxY - transform.scale.y / 2;
                 velocity.y *= -1;
             }
         }
