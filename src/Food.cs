@@ -13,13 +13,14 @@ namespace evobox {
         const string FOOD_BIG_NAME = "sprites/food_ketchup_large.png";
         const int Z_INDEX = -1;
 
-        private double nutrition = 0;
+        public double nutrition { get; private set; }
 
         /// <summary>
         /// Create food with a certain nutritional value.
         /// </summary>
         public Food(Vector2 position, double nutrition)
-            : base(position, Vector2.one * 0.5, Z_INDEX) {
+            : base(position, Vector2.one * 0.5, Z_INDEX)
+        {
             this.nutrition = nutrition;
 
             if (nutrition < 5) {
