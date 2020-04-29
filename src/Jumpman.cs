@@ -16,15 +16,18 @@ namespace evobox {
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
         const int Z_INDEX = 0;
         const int GENOME_LENGTH = 24;
+        const double MUTATUIN_CHANCE = 0.05;
         /// <summary>
         /// Amount of energy use per second to stay alive.
         /// </summary>
         const double ENERGY_USAGE = 5;
+        const double PROCREATION_ENERGY_THRESHOLD = 100;
+        const double PROCREATION_ENERGY_COST = 50;
 
         public Vector2 velocity;
         public Environment environment;
 
-        public double energy { get; private set; } = 50;
+        public double energy { get; private set; }
 
         private Texture[] sprites;
         private Random rand;
@@ -45,33 +48,49 @@ namespace evobox {
         }
 
         /// <summary>
-        /// Construct a new jumpman with a scale of (1, 1) centered at (0, 0).
+        /// Construct a new jumpman with a scale of (1, 1) centered at (0, 0)
+        /// with random genes.
         /// </summary>
+        /// <param name="energy">Amount of energy to start with.</param>
         /// <param name="rand">A RNG used for random movement.</param>
-        public Jumpman(Random rand)
-            : this(Vector2.zero, rand) { }
+        public Jumpman(double energy, Random rand)
+            : this(Vector2.zero, energy, rand) { }
+
+        /// <summary>
+        /// Construct a new jumpman with random genes.
+        /// </summary>
+        /// <param name="position">Position of the jumpman.</param>
+        /// <param name="energy">Amount of energy to start with.</param>
+        /// <param name="rand">A RNG used for random movement.</param>
+        public Jumpman(Vector2 position, double energy, Random rand)
+            : this(position, energy, Genome.RandomGenome(GENOME_LENGTH, rand), rand) {}
 
         /// <summary>
         /// Construct a new jumpman.
         /// </summary>
+        /// <param name="position">Position of the jumpman.</param>
+        /// <param name="energy">Amount of energy to start with.</param>
+        /// <param name="genome">The genes of the jumpman.</param>
         /// <param name="rand">A RNG used for random movement.</param>
-        public Jumpman(Vector2 position, Random rand)
-            : base(position, Vector2.one, Z_INDEX) {
-                this.sprites = new Texture[] {
-                    new Texture(Globals.RENDERER, RIGHT_TEXTURE_NAME),
-                        new Texture(Globals.RENDERER, LEFT_TEXTURE_NAME),
-                        new Texture(Globals.RENDERER, FRONT_TEXTURE_NAME)
-                };
-                this.rand = rand;
-                this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
+        public Jumpman(Vector2 position, double energy, Genome genome, Random rand)
+            : base(position, Vector2.one, Z_INDEX)
+        {
+            this.sprites = new Texture[] {
+                new Texture(Globals.RENDERER, RIGHT_TEXTURE_NAME),
+                    new Texture(Globals.RENDERER, LEFT_TEXTURE_NAME),
+                    new Texture(Globals.RENDERER, FRONT_TEXTURE_NAME)
+            };
+            this.energy = energy;
+            this.genome = genome;
+            this.rand = rand;
+            this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
 
-                this.genome = Genome.RandomGenome(GENOME_LENGTH, rand);
-                SetColor();
-            }
+            SetColor();
+        }
 
         /// <summary>
-        /// Kill the jumpman, removing him from the environment and send
-        /// a debug message.
+        /// Kill the jumpman, removing him from the environment.
+        /// <param name="reason">A debug message as to the cause of death.</param>
         /// </summary>
         public void Die(string reason) {
             reason = reason == null || reason.Trim() == "" ? "unkown reasons" : reason;
@@ -79,10 +98,32 @@ namespace evobox {
             environment.RemoveObject(this);
         }
 
+        /// <summary>
+        /// Spawn a new jumpman as the child of this one with mutated genes.
+        /// <param name="cost">The energy that will be transferred from this jumpman to his child</param>
+        /// </summary>
+        public void Procreate(double cost) {
+            // Create a new RNG and clone the genome.
+            Random cRand   = new Random(rand.Next());
+            Genome cGenome = new Genome(genome);
+            // Mutate the genome.
+            cGenome.Mutate(MUTATUIN_CHANCE, cRand);
+
+            // Create the child and add it io the environment.
+            Jumpman child = new Jumpman(transform.position, cost, cGenome, cRand);
+            environment.AddObject(child);
+
+            this.energy -= cost;
+        }
+
         public override void Update(double deltaTime) {
             if (energy < 0) {
                 Die("starvation");
                 return;
+            }
+
+            if (energy > PROCREATION_ENERGY_THRESHOLD) {
+                Procreate(PROCREATION_ENERGY_COST);
             }
 
             Move(deltaTime);
@@ -124,12 +165,11 @@ namespace evobox {
         /// Check if the jumpman has collided with any food that he can eat.
         /// </summary>
         private void CheckCollisions() {
-            List<Food> food = environment.food;
-            for (int i = food.Count - 1; i >= 0; i--) {
-
+            List<Food> foods = environment.food;
+            foreach (Food food in foods) {
                 // Eat the food if jumpman is on top of it.
-                if (Transform.OverlapAABB(this.transform, food[i].transform)) {
-                    Eat(food[i]);
+                if (Transform.OverlapAABB(this.transform, food.transform)) {
+                    Eat(food);
                 }
             }
         }

@@ -29,15 +29,15 @@ namespace evobox {
             Random rand = new Random();
 
             // Create the environment.
-            Environment env = new Environment(15, 15, new Random(rand.Next()));
+            Environment env = new Environment(30, 30, new Random(rand.Next()));
 
-            // Add a jumpman to the environment.
+            // Add a jumpman to the environment with some energy.
             env.AddObject(
-                new Jumpman(new Random(rand.Next()))
+                new Jumpman(99, new Random(rand.Next()))
             );
 
             // Create a camera centered at (0, 0).
-            Camera camera = new Camera(Vector2.zero, 15, 15);
+            Camera camera = new Camera(Vector2.zero, 30, 30);
 
             // Main loop.
             bool quit = false;
@@ -64,12 +64,6 @@ namespace evobox {
 
                 // Draw the entities in the scene.
                 camera.Draw(renderer, drawRect, env.entities);
-
-                // Debug info
-                if (env.jumpmen.Count > 0) {
-                    Console.Write(String.Format("Jumpman energy: {0:F2}\r",
-                            env.jumpmen[0].energy));
-                }
 
                 renderer.Present();
             }
