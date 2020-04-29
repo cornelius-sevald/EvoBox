@@ -99,8 +99,8 @@ namespace evobox {
                 SpawnFood();
             }
 
-            foreach (SceneObject sceneObject in sceneObjects) {
-                sceneObject.Update(deltaTime);
+            for (int i = sceneObjects.Count - 1; i >= 0; i--) {
+                sceneObjects[i].Update(deltaTime);
             }
         }
 

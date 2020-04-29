@@ -1,3 +1,5 @@
+using System;
+
 namespace evobox {
 
     /// <summary>
@@ -7,6 +9,19 @@ namespace evobox {
 
         public Vector2 position;
         public Vector2 scale;
+
+        /// <summary>
+        /// Return true if the Axis Aligned Bounding Box (AABB)
+        /// of two transforms overlap.
+        /// </summary>
+        public static bool OverlapAABB(Transform t1, Transform t2) {
+            if (Math.Abs(t1.position.x - t2.position.x) >
+                    (t1.scale.x + t2.scale.x) / 2) { return false; }
+            if (Math.Abs(t1.position.y - t2.position.y) >
+                    (t1.scale.y + t2.scale.y) / 2) { return false; }
+
+            return true;
+        }
 
         /// <summary>
         /// Construct a new transform given a position and scale.

@@ -65,6 +65,12 @@ namespace evobox {
                 // Draw the entities in the scene.
                 camera.Draw(renderer, drawRect, env.entities);
 
+                // Debug info
+                if (env.jumpmen.Count > 0) {
+                    Console.Write(String.Format("Jumpman energy: {0:F2}\r",
+                            env.jumpmen[0].energy));
+                }
+
                 renderer.Present();
             }
         }
