@@ -15,14 +15,12 @@ namespace evobox {
         const string LEFT_TEXTURE_NAME = "sprites/jumpman_left.png";
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
         const int Z_INDEX = 0;
-        const int GENOME_LENGTH = 24;
+        const int GENOME_LENGTH = 32;
         const double MUTATUIN_CHANCE = 0.05;
-        /// <summary>
-        /// Amount of energy use per second to stay alive.
-        /// </summary>
-        const double ENERGY_USAGE = 5;
         const double PROCREATION_ENERGY_THRESHOLD = 100;
         const double PROCREATION_ENERGY_COST = 50;
+        const double MIN_SPEED = 1;
+        const double MAX_SPEED = 5;
 
         public Vector2 velocity;
         public Environment environment;
@@ -31,7 +29,7 @@ namespace evobox {
 
         private Texture[] sprites;
         private Random rand;
-        private double speed     = 3.0;
+        private double speed;
         private double turnSpeed = 4.0;
         private Genome genome;
 
@@ -83,9 +81,10 @@ namespace evobox {
             this.energy = energy;
             this.genome = genome;
             this.rand = rand;
-            this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
 
             SetColor();
+            SetSpeed();
+            this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
         }
 
         /// <summary>
@@ -116,6 +115,16 @@ namespace evobox {
             this.energy -= cost;
         }
 
+        /// <summary>
+        /// Calculate the energy used by the jumpman in one second.
+        /// </summary>
+        private double GetEnergyUsagePerSecond() {
+            const double IDLE_ENERGY_COST  = 5;
+            const double SPEED_ENERGY_COST = 1;
+
+            return IDLE_ENERGY_COST + SPEED_ENERGY_COST * speed;
+        }
+
         public override void Update(double deltaTime) {
             if (energy < 0) {
                 Die("starvation");
@@ -128,7 +137,7 @@ namespace evobox {
 
             Move(deltaTime);
             CheckCollisions();
-            energy -= ENERGY_USAGE * deltaTime;
+            energy -= GetEnergyUsagePerSecond() * deltaTime;
         }
 
         /// <summary>
@@ -194,6 +203,19 @@ namespace evobox {
             foreach (Texture t in sprites) {
                 t.SetColorMod(c);
             }
+        }
+
+        private void SetSpeed() {
+            // Need an array to hold the byte.
+            byte[] _speedFactor = new byte[1];
+            // Slice the relevant genes.
+            BitArray bits = genome.Slice(24, 8);
+
+            // Copy the 8 bits to the byte array.
+            bits.CopyTo(_speedFactor, 0);
+            // Convert the byte to a value between 0 and 1.
+            double speedFactor = (double) _speedFactor[0] / 256;
+            this.speed = MIN_SPEED + MAX_SPEED * speedFactor;
         }
     }
 }
