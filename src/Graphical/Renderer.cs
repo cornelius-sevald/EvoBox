@@ -49,9 +49,20 @@ namespace evobox.Graphical {
         /// Get the size of the screen
         /// </summary>
         public Rect OutputRect() {
+            Rect rect = new Rect(0, 0, 0, 0);
+            OutputRect(ref rect);
+            return rect;
+        }
+
+        /// <summary>
+        /// Get the size of the screen
+        /// </summary>
+        public void OutputRect(ref Rect rect) {
             int w, h;
             SDL.SDL_GetRendererOutputSize(RenPtr, out w, out h);
-            return new Rect(0, 0, w, h);
+            rect.X = rect.Y = 0;
+            rect.W = w;
+            rect.H = h;
         }
 
         /// <summary>

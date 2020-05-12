@@ -10,7 +10,7 @@ namespace evobox {
     /// </summary>
     public class Camera : SceneObject {
 
-        public double width, height;
+        public Rect drawRect;
 
         /// <summary>
         /// Construct a new camera given a position, viewport width and height.
@@ -18,10 +18,15 @@ namespace evobox {
         /// <param name="position">The position of the camera.</param>
         /// <param name="width">The width of the camera viewport in world units.</param>
         /// <param name="height">The height of the camera viewport in world units.</param>
-        public Camera(Vector2 position, double width, double height)
-            : base(position, Vector2.one) {
-            this.width = width;
-            this.height = height;
+        /// <param name="drawRect">The screen rectangle the camera draws onto.</param>
+        public Camera(Vector2 position, double width, double height, Rect drawRect)
+            : base(position, new Vector2(width, height)) {
+            this.drawRect = drawRect;
+        }
+
+        public override void Update(double deltaTime) {
+            // Draw the entities in the scene.
+            Draw(Globals.renderer, drawRect, environment.entities);
         }
 
         /// <summary>
@@ -30,18 +35,18 @@ namespace evobox {
         /// <param name="renderer">The renderer drawing onto the window.</param>
         /// <param name="drawRect">The part of the screen to draw onto.</param>
         /// <param name="entities">The entities to draw.</param>
-        public void Draw(Renderer renderer, Rect drawRect, List<Entity> entities) {
+        private void Draw(Renderer renderer, Rect drawRect, List<Entity> entities) {
             List<Entity> zEntities = entities.OrderBy(e => e.zIndex).ToList();
             foreach (Entity entity in zEntities) {
                 Draw(renderer, drawRect, entity);
             }
         }
 
-        public void Draw(Renderer renderer, Rect drawRect, Entity entity) {
+        private void Draw(Renderer renderer, Rect drawRect, Entity entity) {
             double xc = transform.position.x;           // Camera X position
             double yc = transform.position.y;           // Camera Y position
-            double wc = width;                          // Camera width.
-            double hc = height;                         // Camera height.
+            double wc = transform.scale.x;              // Camera width.
+            double hc = transform.scale.y;              // Camera height.
             double xe = entity.transform.position.x;    // Entity X position
             double ye = entity.transform.position.y;    // Entity Y position
             double we = entity.transform.scale.x;       // Entity width.

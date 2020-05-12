@@ -39,11 +39,14 @@ namespace evobox.Graphical {
         /// <summary>
         /// Turn a rectangle into a square.
         /// </summary>
-        public Rect Square() {
+        public void Square() {
             int s = Math.Min(W, H);
             int x = (int) (X + (W - s) / 2.0);
             int y = (int) (Y + (H - s) / 2.0);
-            return new Rect(x, y, s, s);
+
+            this.W = this.H = s;
+            this.X = x;
+            this.Y = y;
         }
 
         /// <summary>

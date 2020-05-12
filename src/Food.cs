@@ -1,4 +1,3 @@
-using System;
 using evobox.Graphical;
 
 namespace evobox {
@@ -24,11 +23,11 @@ namespace evobox {
             this.nutrition = nutrition;
 
             if (nutrition < 5) {
-                this.texture = new Texture(Globals.RENDERER, FOOD_NAME);
+                this.texture = new Texture(Globals.renderer, FOOD_NAME);
             } else if (nutrition < 15) {
-                this.texture = new Texture(Globals.RENDERER, FOOD_SMALL_NAME);
+                this.texture = new Texture(Globals.renderer, FOOD_SMALL_NAME);
             } else {
-                this.texture = new Texture(Globals.RENDERER, FOOD_BIG_NAME);
+                this.texture = new Texture(Globals.renderer, FOOD_BIG_NAME);
             }
         }
     }

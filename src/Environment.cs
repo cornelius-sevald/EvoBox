@@ -102,7 +102,6 @@ namespace evobox {
             foreach (SceneObject sceneObject in addPool) {
                 if (sceneObject is Jumpman j) {
                     this.jumpmen.Add(j);
-                    j.environment = this;
                 }
                 if (sceneObject is Food f) {
                     this.food.Add(f);
@@ -111,6 +110,7 @@ namespace evobox {
                     this.entities.Add(e);
                 }
                 this.sceneObjects.Add(sceneObject);
+                sceneObject.environment = this;
             }
             addPool.Clear();
         }

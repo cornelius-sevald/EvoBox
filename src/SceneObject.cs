@@ -7,6 +7,8 @@ namespace evobox {
 
         public Transform transform { get; private set; }
 
+        public Environment environment;
+
         /// <summary>
         /// Construct a new scene object given a position and scale.
         /// </summary>

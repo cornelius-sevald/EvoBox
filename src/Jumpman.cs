@@ -23,7 +23,6 @@ namespace evobox {
         const double MAX_SPEED = 5;
 
         public Vector2 velocity;
-        public Environment environment;
 
         public double energy { get; private set; }
 
@@ -74,9 +73,9 @@ namespace evobox {
             : base(position, Vector2.one, Z_INDEX)
         {
             this.sprites = new Texture[] {
-                new Texture(Globals.RENDERER, RIGHT_TEXTURE_NAME),
-                    new Texture(Globals.RENDERER, LEFT_TEXTURE_NAME),
-                    new Texture(Globals.RENDERER, FRONT_TEXTURE_NAME)
+                new Texture(Globals.renderer, RIGHT_TEXTURE_NAME),
+                    new Texture(Globals.renderer, LEFT_TEXTURE_NAME),
+                    new Texture(Globals.renderer, FRONT_TEXTURE_NAME)
             };
             this.energy = energy;
             this.genome = genome;
