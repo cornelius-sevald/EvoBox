@@ -54,7 +54,7 @@ namespace evobox {
 
             // Add the camera to the environment.
             env.AddObject(
-                    new Camera(Vector2.zero, 30, 30, Globals.viewport)
+                    new Camera(Vector2.zero, 15, 15, Globals.viewport)
                     );
         }
 
@@ -68,7 +68,8 @@ namespace evobox {
                 }
             }
 
-            var renderer  = Globals.renderer;
+            var renderer   = Globals.renderer;
+            var screenRect = renderer.OutputRect();
             renderer.OutputRect(ref Globals.viewport);
             Globals.viewport.Square();
 
@@ -83,6 +84,26 @@ namespace evobox {
 
             // Update the environment.
             env.Update(1.0 / 60.0);
+
+            // The left and right side outside the viewport.
+            // These are needed to cover up entities drawn at the edge of
+            // the viewport.
+            Rect leftSide = new Rect(
+                    0,
+                    0,
+                    (screenRect.W - Globals.viewport.W) / 2,
+                    screenRect.H
+            );
+            Rect rightSide = new Rect(
+                    leftSide.W + Globals.viewport.W,
+                    0,
+                    leftSide.W,
+                    screenRect.H
+            );
+
+            renderer.Color = Color.black;
+            renderer.FillRect(leftSide);
+            renderer.FillRect(rightSide);
 
             renderer.Present();
         }

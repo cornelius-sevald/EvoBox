@@ -4,7 +4,9 @@ using SDL2;
 
 using evobox.Graphical;
 
-public static class Globals {
+namespace evobox {
+
+    public static class Globals {
         /// <summary>
         /// The path to the resource folder.
         ///
@@ -13,8 +15,11 @@ public static class Globals {
         /// </summary>
         public const string RESOURCE_PATH = "resources/";
 
-        public static Window   window   = null;
+        public static Window window = null;
         public static Renderer renderer = null;
-        public static Rect     viewport = null;
+        public static Rect viewport   = null;
         public static Queue<SDL.SDL_Event> eventQueue = null;
+        public static readonly Keyboard keyboard = Keyboard.Instance;
+    }
+
 }

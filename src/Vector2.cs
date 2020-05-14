@@ -82,6 +82,27 @@ namespace evobox {
             y = sa * x0 + ca * y0;
         }
 
+        /// <summary>
+        /// Restricts a vector between a minimum and a maximum value.
+        /// </summary>
+        public Vector2 Clamp(Vector2 min, Vector2 max) {
+            Vector2 u = new Vector2(this.x, this.y);
+            if (u.x < min.x) {
+                u.x = min.x;
+            }
+            if (u.y < min.y) {
+                u.y = min.y;
+            }
+            if (u.x > max.x) {
+                u.x = max.x;
+            }
+            if (u.y > max.y) {
+                u.y = max.y;
+            }
+
+            return u;
+        }
+
         public override string ToString() {
             return "(" + x + ", " + y + ")";
         }
