@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using evobox.Graphical;
 using evobox.Genetic;
@@ -15,12 +14,9 @@ namespace evobox {
         const string LEFT_TEXTURE_NAME = "sprites/jumpman_left.png";
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
         const int Z_INDEX = 0;
-        const int GENOME_LENGTH = 32;
         const double MUTATUIN_CHANCE = 0.05;
         const double PROCREATION_ENERGY_THRESHOLD = 100;
         const double PROCREATION_ENERGY_COST = 50;
-        const double MIN_SPEED = 1;
-        const double MAX_SPEED = 5;
 
         public Vector2 velocity;
 
@@ -28,7 +24,7 @@ namespace evobox {
 
         private Texture[] sprites;
         private Random rand;
-        private double speed;
+        private JumpmanAttributes attr;
         private double turnSpeed = 4.0;
         private Genome genome;
 
@@ -60,7 +56,11 @@ namespace evobox {
         /// <param name="energy">Amount of energy to start with.</param>
         /// <param name="rand">A RNG used for random movement.</param>
         public Jumpman(Vector2 position, double energy, Random rand)
-            : this(position, energy, Genome.RandomGenome(GENOME_LENGTH, rand), rand) {}
+            : this(position,
+                    energy,
+                    Genome.RandomGenome(JumpmanAttributes.GENOME_LENGTH, rand),
+                    rand
+                    ) { }
 
         /// <summary>
         /// Construct a new jumpman.
@@ -81,9 +81,13 @@ namespace evobox {
             this.genome = genome;
             this.rand = rand;
 
-            SetColor();
-            SetSpeed();
-            this.velocity = speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
+            this.attr = JumpmanAttributes.FromGenome(genome);
+
+            // Apply the attr.
+            this.velocity = attr.speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
+            foreach (Texture t in sprites) {
+                t.SetColorMod(attr.color);
+            }
         }
 
         /// <summary>
@@ -121,7 +125,7 @@ namespace evobox {
             const double IDLE_ENERGY_COST  = 5;
             const double SPEED_ENERGY_COST = 1;
 
-            return IDLE_ENERGY_COST + SPEED_ENERGY_COST * speed;
+            return IDLE_ENERGY_COST + SPEED_ENERGY_COST * attr.speed;
         }
 
         public override void Update(double deltaTime) {
@@ -188,33 +192,6 @@ namespace evobox {
         private void Eat(Food food) {
             environment.RemoveObject(food);
             energy += food.nutrition;
-        }
-
-        /// <summary>
-        /// Change the color of the jumpman based on his genes.
-        /// </summary>
-        private void SetColor() {
-            byte[] rgb = new byte[3];
-            BitArray bits = genome.Slice(0, 24);
-
-            bits.CopyTo(rgb, 0);
-            Color c = new Color(rgb[0], rgb[1], rgb[2]);
-            foreach (Texture t in sprites) {
-                t.SetColorMod(c);
-            }
-        }
-
-        private void SetSpeed() {
-            // Need an array to hold the byte.
-            byte[] _speedFactor = new byte[1];
-            // Slice the relevant genes.
-            BitArray bits = genome.Slice(24, 8);
-
-            // Copy the 8 bits to the byte array.
-            bits.CopyTo(_speedFactor, 0);
-            // Convert the byte to a value between 0 and 1.
-            double speedFactor = (double) _speedFactor[0] / 256;
-            this.speed = MIN_SPEED + MAX_SPEED * speedFactor;
         }
     }
 }
