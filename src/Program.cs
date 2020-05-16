@@ -14,6 +14,7 @@ namespace evobox {
         private static bool quit = false;
         private static Random rand;
         private static Environment env;
+        private static Minimap minimap;
 
         static void Main(string[] args) {
 
@@ -33,9 +34,8 @@ namespace evobox {
                     SCREEN_WIDTH, SCREEN_HEIGHT);
             Renderer renderer = new Renderer(window);
 
-            Globals.window = window;
-            Globals.renderer = renderer;
-            (Globals.viewport = renderer.OutputRect()).Square();
+            Globals.window     = window;
+            Globals.renderer   = renderer;
             Globals.eventQueue = new Queue<SDL.SDL_Event>();
 
             Surface icon = new Surface("EvoBoxIcon.png");
@@ -53,9 +53,11 @@ namespace evobox {
                     );
 
             // Add the camera to the environment.
-            env.AddObject(
-                    new Camera(Vector2.zero, 15, 15, Globals.viewport)
-                    );
+            Camera cam = new Camera(Vector2.zero, 15, 15, Globals.viewport);
+            env.AddObject(cam);
+
+            // Create the minimap.
+            minimap = new Minimap(env, cam, Globals.mapRect);
         }
 
         private static void MainLoop() {
@@ -70,8 +72,15 @@ namespace evobox {
 
             var renderer   = Globals.renderer;
             var screenRect = renderer.OutputRect();
-            renderer.OutputRect(ref Globals.viewport);
-            Globals.viewport.Square();
+            Globals.screenRect.Set(screenRect);
+            Globals.viewport.Set(screenRect.Square());
+            Globals.mapRect.Set(
+                    new Rect(
+                        0,
+                        0,
+                        Globals.viewport.W / 5,
+                        Globals.viewport.H / 5)
+                    );
 
             // Clear the screen.
             renderer.Color = Color.black;
@@ -104,6 +113,9 @@ namespace evobox {
             renderer.Color = Color.black;
             renderer.FillRect(leftSide);
             renderer.FillRect(rightSide);
+
+            // Draw the minimap.
+            minimap.DrawMinimap();
 
             renderer.Present();
         }

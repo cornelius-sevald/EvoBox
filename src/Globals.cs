@@ -15,9 +15,11 @@ namespace evobox {
         /// </summary>
         public const string RESOURCE_PATH = "resources/";
 
-        public static Window window = null;
+        public static Window window     = null;
         public static Renderer renderer = null;
-        public static Rect viewport   = null;
+        public static Rect screenRect   = new Rect(0, 0, 0, 0);
+        public static Rect viewport     = new Rect(0, 0, 0, 0);
+        public static Rect mapRect      = new Rect(0, 0, 0, 0);
         public static Queue<SDL.SDL_Event> eventQueue = null;
         public static readonly Keyboard keyboard = Keyboard.Instance;
     }

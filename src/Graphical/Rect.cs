@@ -37,16 +37,24 @@ namespace evobox.Graphical {
         }
 
         /// <summary>
-        /// Turn a rectangle into a square.
+        /// Copy the elements of <c>other</c> to this rectangle.
         /// </summary>
-        public void Square() {
+        public void Set(Rect other) {
+            this.X = other.X;
+            this.Y = other.Y;
+            this.W = other.W;
+            this.H = other.H;
+        }
+
+        /// <summary>
+        /// Return a squared version of this rectangle.
+        /// </summary>
+        public Rect Square() {
             int s = Math.Min(W, H);
             int x = (int) (X + (W - s) / 2.0);
             int y = (int) (Y + (H - s) / 2.0);
 
-            this.W = this.H = s;
-            this.X = x;
-            this.Y = y;
+            return new Rect(x, y, s, s);
         }
 
         /// <summary>

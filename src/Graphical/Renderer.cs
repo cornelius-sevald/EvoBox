@@ -49,20 +49,10 @@ namespace evobox.Graphical {
         /// Get the size of the screen
         /// </summary>
         public Rect OutputRect() {
-            Rect rect = new Rect(0, 0, 0, 0);
-            OutputRect(ref rect);
-            return rect;
-        }
-
-        /// <summary>
-        /// Get the size of the screen
-        /// </summary>
-        public void OutputRect(ref Rect rect) {
             int w, h;
             SDL.SDL_GetRendererOutputSize(RenPtr, out w, out h);
-            rect.X = rect.Y = 0;
-            rect.W = w;
-            rect.H = h;
+
+            return new Rect(0, 0, w, h);
         }
 
         /// <summary>
@@ -77,6 +67,14 @@ namespace evobox.Graphical {
         /// </summary>
         public void Present() {
             SDL.SDL_RenderPresent(RenPtr);
+        }
+
+        /// <summary>
+        /// Draw the outline of a rectangle with the current color.
+        /// </summary>
+        public void DrawRect(Rect rect) {
+            SDL.SDL_Rect _rect = rect.Rct;
+            SDL.SDL_RenderDrawRect(RenPtr, ref _rect);
         }
 
         /// <summary>
