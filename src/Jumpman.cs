@@ -84,6 +84,7 @@ namespace evobox {
             this.attr = JumpmanAttributes.FromGenome(genome);
 
             // Apply the attr.
+            this.transform.scale = Vector2.one * attr.size;
             this.velocity = attr.speed * Vector2.FromAngle(rand.NextDouble() * 2 * Math.PI);
             foreach (Texture t in sprites) {
                 t.SetColorMod(attr.color);
@@ -125,7 +126,10 @@ namespace evobox {
             const double IDLE_ENERGY_COST  = 5;
             const double SPEED_ENERGY_COST = 1;
 
-            return IDLE_ENERGY_COST + SPEED_ENERGY_COST * attr.speed;
+            return IDLE_ENERGY_COST +
+                SPEED_ENERGY_COST * attr.speed *
+                attr.size * attr.size; // Multiply buy size squared as
+                                       // the size is in 2D.
         }
 
         public override void Update(double deltaTime) {
