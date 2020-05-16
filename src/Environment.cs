@@ -34,9 +34,9 @@ namespace evobox {
         }
 
         /// <summary>
-        /// The chance of food spawning.
+        /// The chance of food spawning per 1x1 tile.
         /// </summary>
-        private double foodSpawnRate = 10;
+        private double foodSpawnRate = 0.01;
         private Random rand;
 
         private List<SceneObject> addPool;
@@ -83,8 +83,11 @@ namespace evobox {
         /// </summary>
         /// <param name="deltaTime">The time in seconds since the last frame.</param>
         public override void Update(double deltaTime) {
-            if (rand.NextDouble() < foodSpawnRate * deltaTime) {
-                SpawnFood();
+            // The food spawn rate for the entire environment.
+            for (int i = 0; i < (int)(transform.scale.x * transform.scale.y); i++) {
+                if (rand.NextDouble() < foodSpawnRate * deltaTime) {
+                    SpawnFood();
+                }
             }
 
             foreach (SceneObject sceneObject in sceneObjects) {
