@@ -19,12 +19,6 @@ namespace evobox {
 
         static void Main(string[] args) {
 
-            double x = 0;
-            while (true) {
-                x += 0.0001;
-                GnuPlot.Plot(String.Format("sin(x*{0})", x));
-            }
-
             Initialize();
 
             // Main loop.
@@ -65,6 +59,8 @@ namespace evobox {
 
             // Create the minimap.
             minimap = new Minimap(env, cam, Globals.mapRect);
+
+            env.SceneObjectAdded += c_SceneObjectAdded;
         }
 
         private static void MainLoop() {
@@ -125,6 +121,23 @@ namespace evobox {
             minimap.DrawMinimap();
 
             renderer.Present();
+        }
+
+        /// <summary>
+        /// Add the <c>c_JumpmanDeath</c> handler to every new jumpman.
+        /// </summary>
+        static void c_SceneObjectAdded(object sender, SceneObjectAddedOrRemovedEventArgs e) {
+            if (e.Object is Jumpman j) {
+                j.Death += c_JumpmanDeath;
+            }
+        }
+
+        /// <summary>
+        /// Send a debug message when a jumpman dies.
+        /// </summary>
+        static void c_JumpmanDeath(object sender, JumpmanDeathEventArgs e) {
+            Console.WriteLine("Jumpman died due to {0} at {1:0.00} seconds.",
+                    e.DeathReason, e.TimeOfDeath);
         }
 
         private static void PollEvents() {
