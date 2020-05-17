@@ -106,7 +106,7 @@ namespace evobox {
             Rect rightSide = new Rect(
                     leftSide.W + Globals.viewport.W,
                     0,
-                    leftSide.W,
+                    leftSide.W + 1,
                     screenRect.H
             );
 
