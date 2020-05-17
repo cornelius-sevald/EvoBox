@@ -13,6 +13,12 @@ namespace evobox {
         const double MAX_FOOD_NUTRITION = 16;
 
         /// <summary>
+        /// The amount of seconds that has transpired in the environment.
+        /// This does not necessarily correlate with the real-world time.
+        /// </summary>
+        public double Time { get; private set; }
+
+        /// <summary>
         /// All of the jumpmen in this environment.
         /// <p>
         /// The elements of this list overlaps with `sceneObjects` and `entities`.
@@ -51,6 +57,8 @@ namespace evobox {
         public Environment(double width, double height, Random rand)
             : base(Vector2.zero, new Vector2(width, height), Z_INDEX)
         {
+            Time = 0;
+
             jumpmen = new List<Jumpman>();
             food = new List<Food>();
             sceneObjects = new List<SceneObject>();
@@ -106,6 +114,8 @@ namespace evobox {
         /// <param name="deltaTime">The time in seconds since the last frame.</param>
         public override void Update(double deltaTime) {
             double foodSpawnRate = Simulation.Instance.settings.foodSpawnRate;
+            Time += deltaTime;
+
             // The food spawn rate for the entire environment.
             for (int i = 0; i < (int)(transform.scale.x * transform.scale.y); i++) {
                 if (rand.NextDouble() < foodSpawnRate * deltaTime) {
@@ -137,6 +147,12 @@ namespace evobox {
                 }
                 this.sceneObjects.Add(sceneObject);
                 sceneObject.environment = this;
+
+                // Send and event to any listeners.
+                var args = new SceneObjectAddedOrRemovedEventArgs();
+                args.Object = sceneObject;
+                args.Time = Time;
+                OnSceneObjectAdded(args);
             }
             addPool.Clear();
         }
@@ -156,6 +172,12 @@ namespace evobox {
                     this.entities.Remove(e);
                 }
                 this.sceneObjects.Remove(sceneObject);
+
+                // Send and event to any listeners.
+                var args = new SceneObjectAddedOrRemovedEventArgs();
+                args.Object = sceneObject;
+                args.Time = Time;
+                OnSceneObjectRemoved(args);
             }
             removePool.Clear();
         }
@@ -176,5 +198,22 @@ namespace evobox {
 
             AddObject(food);
         }
+
+        protected virtual void OnSceneObjectAdded(SceneObjectAddedOrRemovedEventArgs e) {
+            EventHandler<SceneObjectAddedOrRemovedEventArgs> handler = SceneObjectAdded;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnSceneObjectRemoved(SceneObjectAddedOrRemovedEventArgs e) {
+            EventHandler<SceneObjectAddedOrRemovedEventArgs> handler = SceneObjectRemoved;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<SceneObjectAddedOrRemovedEventArgs> SceneObjectAdded;
+        public event EventHandler<SceneObjectAddedOrRemovedEventArgs> SceneObjectRemoved;
     }
 }

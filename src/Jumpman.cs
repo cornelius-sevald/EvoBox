@@ -96,8 +96,12 @@ namespace evobox {
         /// <param name="reason">A debug message as to the cause of death.</param>
         /// </summary>
         public void Die(string reason) {
-            reason = reason == null || reason.Trim() == "" ? "unkown reasons" : reason;
-            Console.WriteLine(String.Format("Jumpman died due to {0}.", reason));
+            JumpmanDeathEventArgs args = new JumpmanDeathEventArgs();
+            args.Deceased    = this;
+            args.DeathReason = reason;
+            args.TimeOfDeath = environment.Time;
+            OnDeath(args);
+
             environment.RemoveObject(this);
         }
 
@@ -198,5 +202,14 @@ namespace evobox {
             environment.RemoveObject(food);
             energy += food.nutrition;
         }
+
+        protected virtual void OnDeath(JumpmanDeathEventArgs e) {
+            EventHandler<JumpmanDeathEventArgs> handler = Death;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<JumpmanDeathEventArgs> Death;
     }
 }

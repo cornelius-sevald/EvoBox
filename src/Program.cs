@@ -25,12 +25,6 @@ namespace evobox {
 
         static void Main(string[] args) {
 
-            double x = 0;
-            while (true) {
-                x += 0.0001;
-                GnuPlot.Plot(String.Format("sin(x*{0})", x));
-            }
-
             Initialize();
 
             // Main loop.
