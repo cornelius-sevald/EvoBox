@@ -165,11 +165,18 @@ namespace evobox {
 
         private void SpawnFood() {
             double nutrition = rand.NextDouble() * (MAX_FOOD_NUTRITION - MIN_FOOD_NUTRITION) + MIN_FOOD_NUTRITION;
-            double xPos = (0.5 - rand.NextDouble()) * transform.scale.x - transform.position.x;
-            double yPos = (0.5 - rand.NextDouble()) * transform.scale.y - transform.position.y;
-            Vector2 pos = new Vector2(xPos, yPos);
 
-            Food food = new Food(pos, nutrition);
+            Food food = new Food(Vector2.zero, nutrition);
+
+            double xPos = (0.5 - rand.NextDouble()) *
+                (transform.scale.x - food.transform.scale.x) -
+                transform.position.x;
+            double yPos = (0.5 - rand.NextDouble()) *
+                (transform.scale.y - food.transform.scale.y) -
+                transform.position.y;
+
+            food.transform.position = new Vector2(xPos, yPos);
+
             AddObject(food);
         }
     }
