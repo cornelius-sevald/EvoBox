@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using SDL2;
+using AwokeKnowing.GnuplotCSharp;
 
 using evobox.Graphical;
 
@@ -17,6 +18,12 @@ namespace evobox {
         private static Minimap minimap;
 
         static void Main(string[] args) {
+
+            double x = 0;
+            while (true) {
+                x += 0.0001;
+                GnuPlot.Plot(String.Format("sin(x*{0})", x));
+            }
 
             Initialize();
 
