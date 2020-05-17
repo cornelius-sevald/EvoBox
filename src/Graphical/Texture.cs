@@ -19,6 +19,26 @@ namespace evobox.Graphical {
         public IntPtr TexPtr { get; private set; }
 
         /// <summary>
+        /// Create a blank texture.
+        /// </summary>
+        public Texture(Renderer renderer, int width, int height,
+                SDL.SDL_TextureAccess access) {
+            IntPtr texture = SDL.SDL_CreateTexture(
+                    renderer.RenPtr,
+                    SDL.SDL_PIXELFORMAT_RGBA8888,
+                    (int)access,
+                    width,
+                    height
+                    );
+
+            if (texture == IntPtr.Zero) {
+                throw new SDLException("SDL_CreateTexture");
+            }
+
+            TexPtr = texture;
+        }
+
+        /// <summary>
         /// Create a texture from an image file
         /// </summary>
         /// <param name="renderer">The renderer that will render this texture</param>

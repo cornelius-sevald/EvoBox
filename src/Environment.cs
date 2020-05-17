@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace evobox {
-    public class Environment : SceneObject {
+using SDL2;
 
+using evobox.Graphical;
+
+namespace evobox {
+    public class Environment : Entity {
+
+        const int Z_INDEX = -100;
         const double MIN_FOOD_NUTRITION = 4;
         const double MAX_FOOD_NUTRITION = 16;
 
@@ -48,7 +53,7 @@ namespace evobox {
         /// <param name="width">The width of the environment.</param>
         /// <param name="height">The height of the environment.</param>
         public Environment(double width, double height, Random rand)
-            : base(Vector2.zero, new Vector2(width, height))
+            : base(Vector2.zero, new Vector2(width, height), Z_INDEX)
         {
             jumpmen = new List<Jumpman>();
             food = new List<Food>();
@@ -59,6 +64,27 @@ namespace evobox {
             removePool = new List<SceneObject>();
 
             this.rand = rand;
+
+            // Create a tiling ground texture.
+            var renderer = Globals.renderer;
+            Texture terrainTexture = new Texture(renderer, "sprites/terrain_grass.png");
+            // The dimentions of the terrain texture.
+            int _tx, _ty;
+            terrainTexture.Query(out _tx, out _ty);
+            // The dimentions of the whole texture.
+            int tx = _tx * (int)Math.Ceiling(transform.scale.x);
+            int ty = _tx * (int)Math.Ceiling(transform.scale.y);
+            this.texture = new Texture(renderer, tx, ty,
+                    SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET);
+            renderer.SetTarget(this.texture);
+
+            for (int x = 0; x < tx; x += _tx) {
+                for (int y = 0; y < ty; y += _ty) {
+                    Rect dst = new Rect(x, y, _tx, _ty);
+                    renderer.RenderTexture(terrainTexture, dst, null);
+                }
+            }
+            renderer.SetTarget(null);
         }
 
         /// <summary>

@@ -33,6 +33,7 @@ namespace evobox {
 
         public override void Update(double deltaTime) {
             // Draw the entities in the scene.
+            Draw(Globals.renderer, drawRect, environment);
             Draw(Globals.renderer, drawRect, environment.entities);
 
             var kb = Globals.keyboard;

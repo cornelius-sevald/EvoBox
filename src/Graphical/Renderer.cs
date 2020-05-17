@@ -70,6 +70,16 @@ namespace evobox.Graphical {
         }
 
         /// <summary>
+        /// Set the rendering target.
+        /// </summary>
+        /// <param name="texture">The texture to set as the new target.
+        /// If it is <c>null</c> the target will be reset to the screen.</param>
+        public void SetTarget(Texture texture) {
+            IntPtr texPtr = texture == null ? IntPtr.Zero : texture.TexPtr;
+            SDL.SDL_SetRenderTarget(RenPtr, texPtr);
+        }
+
+        /// <summary>
         /// Draw the outline of a rectangle with the current color.
         /// </summary>
         public void DrawRect(Rect rect) {
