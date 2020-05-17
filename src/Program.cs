@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using SDL2;
+using AwokeKnowing.GnuplotCSharp;
 
 using evobox.Graphical;
 using evobox.UI;
@@ -23,6 +24,22 @@ namespace evobox {
         private static UIElement[] uiElements;
 
         static void Main(string[] args) {
+
+            double x = 0;
+            while (true) {
+                x += 0.0001;
+                GnuPlot.Plot(String.Format("sin(x*{0})", x));
+            }
+
+            Initialize();
+
+            // Main loop.
+            while (!quit) {
+                MainLoop();
+            }
+        }
+
+        private static void Initialize() {
 
             // Initialize graphics, create window & renderer etc.
             Graphics.InitGraphics();
