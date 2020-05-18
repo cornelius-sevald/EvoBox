@@ -14,6 +14,7 @@ namespace evobox {
         private Random rand;
         private Environment env;
         private Minimap minimap;
+        private EnvironmentTracker envTracker;
 
         public Simulation(SimulationSettings settings) {
             Instance = this;
@@ -41,6 +42,9 @@ namespace evobox {
 
             // Create the minimap.
             this.minimap = new Minimap(env, cam, Globals.mapRect);
+
+            // Create the environment tracker.
+            envTracker = new EnvironmentTracker(env);
         }
 
         public void Update(double deltaTime) {

@@ -9,7 +9,7 @@ namespace evobox {
     /// Genetic attributes of instances of the <c>Jumpman</c> class.
     /// Jumpmen represent creatures with different genetics.
     /// </summary>
-    public class JumpmanAttributes {
+    public struct JumpmanAttributes {
 
         public const int GENOME_LENGTH = 40;
         public const double MIN_SPEED  = 1;
