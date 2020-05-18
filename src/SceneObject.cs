@@ -9,6 +9,9 @@ namespace evobox {
 
         public Environment environment;
 
+        // Is this object a part of the simulation?
+        public virtual bool SimulationObject { get { return true; } }
+
         /// <summary>
         /// Construct a new scene object given a position and scale.
         /// </summary>

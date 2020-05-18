@@ -9,6 +9,8 @@ namespace evobox {
 
         public static Simulation Instance { get; private set; }
 
+        private const int MIN_TIMESCALE = 1;
+        private const int MAX_TIMESCALE = 10;
         // Time to 'warm up' the environment before spawning the jumpman.
         const double WARMUP_TIME = 1;
 
@@ -91,6 +93,18 @@ namespace evobox {
                             // 'n' switches to the next graph.
                             case SDL.SDL_Keycode.SDLK_n:
                                 envGrapher.graphType = envGrapher.graphType.Next();
+                                break;
+                            // Space toggles pausing the simulation.
+                            case SDL.SDL_Keycode.SDLK_SPACE:
+                                env.paused = !env.paused;
+                                break;
+                            // '+' makes the simulation faster.
+                            case SDL.SDL_Keycode.SDLK_PLUS:
+                                env.timeScale = Math.Clamp(env.timeScale + 1, MIN_TIMESCALE, MAX_TIMESCALE);
+                                break;
+                            // '-' makes the simulation slower.
+                            case SDL.SDL_Keycode.SDLK_MINUS:
+                                env.timeScale = Math.Clamp(env.timeScale - 1, MIN_TIMESCALE, MAX_TIMESCALE);
                                 break;
                         }
                         break;

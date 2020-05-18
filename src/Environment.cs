@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using SDL2;
@@ -43,6 +44,14 @@ namespace evobox {
         public double height {
             get { return transform.scale.y; }
         }
+
+        public bool paused = false;
+
+        /// <summary>
+        /// The time scaling of everything in the environment.
+        /// Increasing this value makes everything faster.
+        /// </summary>
+        public int timeScale = 1;
 
         private Random rand;
 
@@ -113,6 +122,20 @@ namespace evobox {
         /// </summary>
         /// <param name="deltaTime">The time in seconds since the last frame.</param>
         public override void Update(double deltaTime) {
+            // Run more simulation frames between rendering.
+            if (!paused) {
+                for (int i = 0; i < timeScale; i++) {
+                    UpdateSimulation(deltaTime);
+                }
+            }
+
+            // Update non-simulation objects.
+            foreach (SceneObject sceneObject in sceneObjects.Where(s => !s.SimulationObject)) {
+                sceneObject.Update(deltaTime);
+            }
+        }
+
+        private void UpdateSimulation(double deltaTime) {
             double foodSpawnRate = Simulation.Instance.settings.foodSpawnRate;
             Time += deltaTime;
 
@@ -123,7 +146,7 @@ namespace evobox {
                 }
             }
 
-            foreach (SceneObject sceneObject in sceneObjects) {
+            foreach (SceneObject sceneObject in sceneObjects.Where(s => s.SimulationObject)) {
                 sceneObject.Update(deltaTime);
             }
 
