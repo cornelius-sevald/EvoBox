@@ -12,6 +12,9 @@ namespace evobox {
         private const int SCREEN_WIDTH = 800;
         private const int SCREEN_HEIGHT = 800;
 
+        private const int MIN_TIMESCALE = 1;
+        private const int MAX_TIMESCALE = 10;
+
         private static bool quit = false;
         private static Random rand;
         private static Environment env;
@@ -94,6 +97,18 @@ namespace evobox {
                             case SDL.SDL_Keycode.SDLK_n:
                                 envGrapher.graphType = envGrapher.graphType.Next();
                                 break;
+                            // Space toggles pausing the simulation.
+                            case SDL.SDL_Keycode.SDLK_SPACE:
+                                env.paused = !env.paused;
+                                break;
+                            // '+' makes the simulation faster.
+                            case SDL.SDL_Keycode.SDLK_PLUS:
+                                env.timeScale = Math.Clamp(env.timeScale + 1, MIN_TIMESCALE, MAX_TIMESCALE);
+                                break;
+                            // '-' makes the simulation slower.
+                            case SDL.SDL_Keycode.SDLK_MINUS:
+                                env.timeScale = Math.Clamp(env.timeScale - 1, MIN_TIMESCALE, MAX_TIMESCALE);
+                                break;
                         }
                         break;
                     default:
@@ -124,7 +139,8 @@ namespace evobox {
 
 
             // Update the environment.
-            env.Update(1.0 / 60.0);
+            double deltaTime = 1.0 / 60.0; // Change in the future.
+            env.Update(deltaTime);
 
             // The left and right side outside the viewport.
             // These are needed to cover up entities drawn at the edge of

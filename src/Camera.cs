@@ -13,6 +13,8 @@ namespace evobox {
     /// </summary>
     public class Camera : SceneObject {
 
+        public override bool SimulationObject { get { return false; } }
+
         private readonly Vector2 MIN_SCALE = new Vector2(1, 1);
         private const double MOVE_SPEED = 10;
         private const double ZOOM_SPEED = -100;
