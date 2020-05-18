@@ -21,10 +21,10 @@ namespace evobox {
         public Vector2 velocity;
 
         public double energy { get; private set; }
+        public JumpmanAttributes attr { get; private set;}
 
         private Texture[] sprites;
         private Random rand;
-        private JumpmanAttributes attr;
         private double turnSpeed = 4.0;
         private Genome genome;
 

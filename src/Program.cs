@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 
 using SDL2;
-using AwokeKnowing.GnuplotCSharp;
 
 using evobox.Graphical;
 
@@ -17,6 +17,10 @@ namespace evobox {
         private static Environment env;
         private static Minimap minimap;
         private static EnvironmentTracker envTracker;
+        private static EnvironmentGrapher envGrapher;
+        // Used to wait between updating the graph.
+        private static object graphMonitor = new object();
+        private static Thread graphThread;
 
         static void Main(string[] args) {
 
@@ -26,6 +30,8 @@ namespace evobox {
             while (!quit) {
                 MainLoop();
             }
+
+            DeInitialize();
         }
 
         private static void Initialize() {
@@ -65,17 +71,36 @@ namespace evobox {
             envTracker = new EnvironmentTracker(env);
 
             env.SceneObjectAdded += c_SceneObjectAdded;
+
+            // Create the environment grapher.
+            envGrapher = new EnvironmentGrapher(envTracker, GraphTypes.NutritionAndJumpmen);
+            graphThread = new Thread(UpdateGraph);
+            graphThread.Start();
         }
 
         private static void MainLoop() {
             PollEvents();
 
-            // Check if user wants to quit.
             foreach (SDL.SDL_Event e in Globals.eventQueue) {
-                if (e.type == SDL.SDL_EventType.SDL_QUIT) {
-                    quit = true;
+                switch (e.type) {
+                    // Check if user wants to quit.
+                    case SDL.SDL_EventType.SDL_QUIT:
+                        quit = true;
+                        break;
+                    // Check if the user has pressed af button.
+                    case SDL.SDL_EventType.SDL_KEYDOWN:
+                        switch (e.key.keysym.sym) {
+                            // 'n' switches to the next graph.
+                            case SDL.SDL_Keycode.SDLK_n:
+                                envGrapher.graphType = envGrapher.graphType.Next();
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
+
 
             var renderer   = Globals.renderer;
             var screenRect = renderer.OutputRect();
@@ -125,6 +150,24 @@ namespace evobox {
             minimap.DrawMinimap();
 
             renderer.Present();
+        }
+
+        private static void DeInitialize() {
+            // Send a signal to the UpdateGraph method that is should
+            // stop sleeping.
+            lock (graphMonitor) {
+                Monitor.Pulse(graphMonitor);
+            }
+            graphThread.Join();
+        }
+
+        private static void UpdateGraph() {
+            while (envGrapher != null && !quit) {
+                lock (graphMonitor) {
+                    envGrapher.UpdateGraph();
+                    Monitor.Wait(graphMonitor, TimeSpan.FromSeconds(1));
+                }
+            }
         }
 
         /// <summary>

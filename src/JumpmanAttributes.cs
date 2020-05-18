@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 using evobox.Genetic;
@@ -45,6 +46,21 @@ namespace evobox {
             return new JumpmanAttributes(color, speed, size);
         }
 
+        /// <summary>
+        /// Return a string of the attributes seperated by commas.
+        /// <p>The order is red, green, blue, speed, size</p>
+        /// </summary>
+        public override string ToString() {
+            return String.Format(
+                    "{0}, {1}, {2}, {3}, {4}",
+                    color.R,
+                    color.G,
+                    color.B,
+                    speed,
+                    size
+                    );
+        }
+
         private static Color ColorFromGenome(Genome genome) {
                 byte[] rgb = new byte[3];
                 BitArray bits = genome.Slice(0, 24);
@@ -62,7 +78,7 @@ namespace evobox {
                 bits.CopyTo(_speedFactor, 0);
                 // Convert the byte to a value between 0 and 1.
                 double speedFactor = (double) _speedFactor[0] / 256;
-                return MIN_SPEED + MAX_SPEED * speedFactor;
+                return MIN_SPEED + (MAX_SPEED - MIN_SPEED) * speedFactor;
         }
 
         private static double SizeFromGenome(Genome genome) {
@@ -75,8 +91,9 @@ namespace evobox {
                 bits.CopyTo(_sizeFactor, 0);
                 // Convert the byte to a value between 0 and 1.
                 double sizeFactor = (double) _sizeFactor[0] / 256;
-                return MIN_SIZE + MAX_SIZE * sizeFactor;
+                return MIN_SIZE + (MAX_SIZE - MIN_SIZE) * sizeFactor;
         }
+
     }
 
 }
