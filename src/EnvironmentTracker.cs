@@ -1,53 +1,88 @@
-using System.Linq;
-using System.Collections.Generic;
+using System;
+using System.IO;
 
 namespace evobox {
 
     /// <summary>
     /// Class that tracks the statistics of an environment.
     /// </summary>
-    public class EnvironmentTracker {
+    public sealed class EnvironmentTracker : IDisposable {
 
-        // A timeline of the nutrition available in the environment.
-        public List<TimedEntry<double>> nutritionTimeline;
-        // A timeline of the amount of living jumpmen.
-        public List<TimedEntry<int>> jumpmanCountTimeline;
-        // A timeline of the average jumpman attributes.
-        public List<TimedEntry<JumpmanAttributes>> jumpmanAttrTimeline;
-        // A list of the current attributes of jumpmen.
-        public List<JumpmanAttributes> jumpmanAttributes;
+        public readonly string nutritionTmpPath;
+        public readonly string jumpmanCountTmpPath;
+        public readonly string averageJumpmanAttrTmpPath;
+
+        private double maxSpeed = 0; // Debug
+        private double maxAvgSpeed = 0; // Debug
+
+        private double nutrition;
+        private int jumpmanCount;
+        private JumpmanAttributes averageJumpmanAttr;
+        private StreamWriter nutritionSW;
+        private StreamWriter jumpmanCountSW;
+        private StreamWriter averageJumpmanAttrSW;
+        private object sceneObjectAddedLock = new object();
+        private object sceneObjectRemovedLock = new object();
 
         public EnvironmentTracker(Environment environment) {
-            nutritionTimeline    = new List<TimedEntry<double>>();
-            jumpmanCountTimeline = new List<TimedEntry<int>>();
-            jumpmanAttrTimeline  = new List<TimedEntry<JumpmanAttributes>>();
-            jumpmanAttributes    = new List<JumpmanAttributes>();
+            nutrition = 0;
+            jumpmanCount = 0;
+            averageJumpmanAttr = new JumpmanAttributes();
 
-            // Add initial values.
-            nutritionTimeline.Add(new TimedEntry<double>(0, 0));
-            jumpmanCountTimeline.Add(new TimedEntry<int>(0, 0));
+            // Create writers for the temporary data files.
+            nutritionTmpPath          = Path.GetTempFileName();
+            jumpmanCountTmpPath       = Path.GetTempFileName();
+            averageJumpmanAttrTmpPath = Path.GetTempFileName();
+            nutritionSW          = new StreamWriter(nutritionTmpPath, true);
+            jumpmanCountSW       = new StreamWriter(jumpmanCountTmpPath, true);
+            averageJumpmanAttrSW = new StreamWriter(averageJumpmanAttrTmpPath, true);
+
+            // Debug
+            Console.WriteLine(nutritionTmpPath);
+            Console.WriteLine(jumpmanCountTmpPath);
+            Console.WriteLine(averageJumpmanAttrTmpPath);
 
             // Add the event handlers to the environment.
             environment.SceneObjectAdded   += c_SceneObjectAdded;
             environment.SceneObjectRemoved += c_SceneObjectRemoved;
         }
 
+        void LogData<T>(StreamWriter sw, double time, T data) {
+            sw.WriteLine("{0}, {1}", time, data);
+            sw.Flush();
+        }
+
         /// <summary>
         /// Collect statistics when a <c>SceneObject</c> is added.
         /// </summary>
         void c_SceneObjectAdded(object sender, SceneObjectAddedOrRemovedEventArgs e) {
-            if (e.Object is Jumpman j) {
-                // Update the jumpman count timeline...
-                var prevEntry = jumpmanCountTimeline.Last();
-                var entry = new TimedEntry<int>(e.Time, prevEntry.entry + 1);
-                jumpmanCountTimeline.Add(entry);
-            }
-
-            else if (e.Object is Food f) {
-                // Update the nutrition timeline...
-                var prevEntry = nutritionTimeline.Last();
-                var entry = new TimedEntry<double>(e.Time, prevEntry.entry + f.nutrition);
-                nutritionTimeline.Add(entry);
+            lock (sceneObjectAddedLock) {
+                if (e.Object is Jumpman j) {
+                    // Update and log the jumpman count.
+                    jumpmanCount += 1;
+                    LogData<int>(jumpmanCountSW, e.Time, jumpmanCount);
+                    // Update and log the average attributes.
+                    double avgSpeed = averageJumpmanAttr.speed;
+                    double avgSize  = averageJumpmanAttr.size;
+                    int n = jumpmanCount;
+                    avgSpeed += (j.attr.speed - avgSpeed) / n;
+                    avgSize  += (j.attr.size  - avgSize)  / n;
+                    averageJumpmanAttr.speed = avgSpeed;
+                    averageJumpmanAttr.size  = avgSize;
+                    LogData<JumpmanAttributes>(averageJumpmanAttrSW, e.Time, averageJumpmanAttr);
+                    if (j.attr.speed > maxSpeed) {
+                        maxSpeed = j.attr.speed;
+                        Console.WriteLine("New max speed:     {0}", maxSpeed);
+                    }
+                    if (averageJumpmanAttr.speed > maxAvgSpeed) {
+                        maxAvgSpeed = averageJumpmanAttr.speed;
+                        Console.WriteLine("New max avg speed: {0}", maxAvgSpeed);
+                    }
+                }
+                else if (e.Object is Food f) {
+                    nutrition += f.nutrition;
+                    LogData<double>(nutritionSW, e.Time, nutrition);
+                }
             }
         }
 
@@ -55,34 +90,41 @@ namespace evobox {
         /// Collect statistics when a <c>SceneObject</c> is removed.
         /// </summary>
         void c_SceneObjectRemoved(object sender, SceneObjectAddedOrRemovedEventArgs e) {
-            if (e.Object is Jumpman j) {
-                // Update the jumpman count timeline...
-                var prevEntry = jumpmanCountTimeline.Last();
-                var entry = new TimedEntry<int>(e.Time, prevEntry.entry - 1);
-                jumpmanCountTimeline.Add(entry);
-            }
+            lock (sceneObjectRemovedLock) {
+                if (e.Object is Jumpman j) {
+                    // Update and log the average attributes.
+                    double avgSpeed = 0;
+                    double avgSize  = 0;
+                    int n = jumpmanCount;
+                    if (n > 0) {
+                        avgSpeed = averageJumpmanAttr.speed;
+                        avgSize  = averageJumpmanAttr.size;
+                        avgSpeed = ((avgSpeed * n) - j.attr.speed) / (n - 1);
+                        avgSize  = ((avgSize  * n) - j.attr.size)  / (n - 1);
+                    }
+                    averageJumpmanAttr.speed = avgSpeed;
+                    averageJumpmanAttr.size  = avgSize;
+                    LogData<JumpmanAttributes>(averageJumpmanAttrSW, e.Time, averageJumpmanAttr);
+                    // Update and log the jumpman count.
+                    jumpmanCount -= 1;
+                    LogData<int>(jumpmanCountSW, e.Time, jumpmanCount);
+                }
 
-            else if (e.Object is Food f) {
-                // Update the nutrition timeline...
-                var prevEntry = nutritionTimeline.Last();
-                var entry = new TimedEntry<double>(e.Time, prevEntry.entry - f.nutrition);
-                nutritionTimeline.Add(entry);
+                else if (e.Object is Food f) {
+                    nutrition -= f.nutrition;
+                    LogData<double>(nutritionSW, e.Time, nutrition);
+                }
+            }
+        }
+
+        public void Dispose() {
+            if (nutritionSW != null) {
+                nutritionSW.Dispose();
+            }
+            if (jumpmanCountSW != null) {
+                jumpmanCountSW.Dispose();
             }
         }
 
     }
-
-    /// <summary>
-    /// An entry with a timestamp attatched.
-    /// </summary>
-    public struct TimedEntry<T> {
-        public double time;
-        public T entry;
-
-        public TimedEntry(double time, T entry) {
-            this.time = time;
-            this.entry = entry;
-        }
-    }
-
 }

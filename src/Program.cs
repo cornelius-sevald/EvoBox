@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using SDL2;
-using AwokeKnowing.GnuplotCSharp;
 
 using evobox.Graphical;
 using evobox.UI;
@@ -30,6 +29,10 @@ namespace evobox {
             // Main loop.
             while (!quit) {
                 MainLoop();
+            }
+
+            if (sim != null) {
+                sim.Stop();
             }
         }
 
@@ -101,22 +104,22 @@ namespace evobox {
                 .Concat(buttons)
                 .Concat(labels)
                 .ToArray();
-
-            // Main loop.
-            while (!quit) {
-                MainLoop();
-            }
         }
 
         private static void MainLoop() {
             PollEvents();
 
-            // Check if user wants to quit.
             foreach (SDL.SDL_Event e in Globals.eventQueue) {
-                if (e.type == SDL.SDL_EventType.SDL_QUIT) {
-                    quit = true;
+                switch (e.type) {
+                    // Check if user wants to quit.
+                    case SDL.SDL_EventType.SDL_QUIT:
+                        quit = true;
+                        break;
+                    default:
+                        break;
                 }
             }
+
 
             var renderer   = Globals.renderer;
             var screenRect = renderer.OutputRect();

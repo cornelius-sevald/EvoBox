@@ -1,4 +1,7 @@
 using System;
+using System.Threading;
+
+using SDL2;
 
 namespace evobox {
 
@@ -11,10 +14,15 @@ namespace evobox {
 
         public SimulationSettings settings { get; private set; }
 
+        private bool running = true;
         private Random rand;
         private Environment env;
         private Minimap minimap;
-        private EnvironmentTracker envTracker;
+        private static EnvironmentTracker envTracker;
+        private static EnvironmentGrapher envGrapher;
+        // Used to wait between updating the graph.
+        private static object graphMonitor = new object();
+        private static Thread graphThread;
 
         public Simulation(SimulationSettings settings) {
             Instance = this;
@@ -45,15 +53,60 @@ namespace evobox {
 
             // Create the environment tracker.
             envTracker = new EnvironmentTracker(env);
+
+            // Create the environment grapher.
+            envGrapher = new EnvironmentGrapher(envTracker, GraphTypes.NutritionAndJumpmen);
+            graphThread = new Thread(UpdateGraph);
+            graphThread.Start();
         }
 
         public void Update(double deltaTime) {
+            HandleInput();
+
             // Update the environment.
             env.Update(deltaTime);
 
             // Draw the minimap.
             minimap.DrawMinimap();
 
+        }
+
+        public void Stop() {
+            running = false;
+
+            // Send a signal to the UpdateGraph method that is should
+            // stop sleeping.
+            lock (graphMonitor) {
+                Monitor.Pulse(graphMonitor);
+            }
+            graphThread.Join();
+        }
+
+        private void HandleInput() {
+            foreach (SDL.SDL_Event e in Globals.eventQueue) {
+                switch (e.type) {
+                    // Check if the user has pressed af button.
+                    case SDL.SDL_EventType.SDL_KEYDOWN:
+                        switch (e.key.keysym.sym) {
+                            // 'n' switches to the next graph.
+                            case SDL.SDL_Keycode.SDLK_n:
+                                envGrapher.graphType = envGrapher.graphType.Next();
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void UpdateGraph() {
+            while (envGrapher != null && running) {
+                lock (graphMonitor) {
+                    envGrapher.UpdateGraph();
+                    Monitor.Wait(graphMonitor, TimeSpan.FromSeconds(1));
+                }
+            }
         }
 
     }
