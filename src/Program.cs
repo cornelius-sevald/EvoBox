@@ -16,6 +16,7 @@ namespace evobox {
         private static Random rand;
         private static Environment env;
         private static Minimap minimap;
+        private static EnvironmentTracker envTracker;
 
         static void Main(string[] args) {
 
@@ -59,6 +60,9 @@ namespace evobox {
 
             // Create the minimap.
             minimap = new Minimap(env, cam, Globals.mapRect);
+
+            // Create the environment tracker.
+            envTracker = new EnvironmentTracker(env);
 
             env.SceneObjectAdded += c_SceneObjectAdded;
         }
