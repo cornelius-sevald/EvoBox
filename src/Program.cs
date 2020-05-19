@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using SDL2;
 
@@ -42,10 +41,14 @@ namespace evobox {
             Surface icon = new Surface("EvoBoxIcon.png");
             window.SetWindowIcon(icon);
 
-            font = new Font("playfair-display/PlayfairDisplay-Regular.ttf", 128);
+            font = new Font(
+                    "playfair-display/PlayfairDisplay-Regular.ttf",
+                    128
+                    );
 
             slider = new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5);
-            button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0, "quit", font, () => quit = true);
+            button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0,
+                    "quit", font, () => quit = true);
         }
 
         private static void MainLoop() {

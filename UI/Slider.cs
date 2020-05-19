@@ -38,14 +38,13 @@ namespace evobox.UI {
         public SliderStates State { get; private set; }
 
         /// <summary>
-        /// Construct a new button
+        /// Construct a new slider
         /// </summary>
-        /// <param name="x">The horizontal offset of the button [0 ; 1]</param>
-        /// <param name="y">The vertical offset of the button [0 ; 1]</param>
-        /// <param name="w">The width of the button [0 ; 1]</param>
-        /// <param name="h">The height of the button [0 ; 1]</param>
-        /// <param name="text">The label of the button</param>
-        /// <param name="font">The font of the label</param>
+        /// <param name="x">The horizontal offset of the slider [0 ; 1]</param>
+        /// <param name="y">The vertical offset of the slider [0 ; 1]</param>
+        /// <param name="w">The width of the slider [0 ; 1]</param>
+        /// <param name="h">The height of the slider [0 ; 1]</param>
+        /// <param name="text">The label of the slider</param>
         /// <param name="minValue">The minimal slider value</param>
         /// <param name="maxValue">The maximum slider value</param>
         /// <param name="startValue">The initial slider value</param>
@@ -104,7 +103,7 @@ namespace evobox.UI {
         /// <summary>
         /// Draw the slider
         /// </summary>
-        /// <param name="dst">The rectangle to draw the button upon</param>
+        /// <param name="dst">The rectangle to draw the slider upon</param>
         public void Draw(Rect dst) {
             var renderer = Globals.renderer;
 
