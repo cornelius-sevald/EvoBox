@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using SDL2;
@@ -50,15 +51,43 @@ namespace evobox {
                     128
                     );
 
+            // Create the UI.
             labels  = new Label[] {
-                new Label(3/8.0, 0, 1/4.0, 1/8.0, "evobox", font),
+                // Titel label.
+                new Label(3/8.0,   0,      1/4.0, 1/8.0,  "EvoBox", font),
+                // "Jumpmen" header label.
+                new Label(3/40.0,  1/5.0,  1/3.0, 1/10.0, "JUMPMEN", font),
+                // "Enviroment" header label.
+                new Label(1/2.0,   1/5.0,  4/9.0, 1/10.0, "ENVIRONMENT", font),
+                // Jumpman slider labels.
+                new Label(6/40.0,  6/21.0,  1/5.0, 1/20.0, "idle cost", font),
+                new Label(5/40.0,  8/21.0,  1/4.0, 1/20.0, "speed cost", font),
+                new Label(6/40.0,  10/21.0, 1/5.0, 1/20.0, "size cost", font),
+                new Label(3/40.0,  12/21.0, 1/3.0, 1/20.0, "mutation chance",
+                        font),
+                // Enviroment slider labels.
+                new Label(25/40.0, 6/21.0,  1/5.0, 1/20.0, "food rate", font),
             };
             sliders = new Slider[] {
-                new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5)
+                // Idle cost slider.
+                new Slider(3/40.0,  1/3.0,   1/3.0, 1/30.0, 0,   10, 5),
+                // Speed cost slider.
+                new Slider(3/40.0,  3/7.0,   1/3.0, 1/30.0, 0.1, 3,  1),
+                // Size cost slider.
+                new Slider(3/40.0,  11/21.0, 1/3.0, 1/30.0, 1,   3,  2),
+                // Mutation chance slider.
+                new Slider(3/40.0,  13/21.0, 1/3.0, 1/30.0, 0,   5,  1),
+                // Food spawn rate slider.
+                new Slider(22/40.0, 1/3.0,   1/3.0, 1/30.0, 0,   2,  1)
             };
             buttons = new Button[] {
-                new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0, "quit", font,
-                        () => quit = true)
+                new Button(3/24.0, 40/48.0, 1/6.0, 1/10.0, "quit", font,
+                        () => quit = true),
+                new Button(10/24.0, 40/48.0, 1/6.0, 1/10.0, "reset", font,
+                        () => SettingsToSliders(SimulationSettings.
+                                                DefaultSettings())),
+                new Button(17/24.0, 40/48.0, 1/6.0, 1/10.0, "start", font,
+                        () => Console.WriteLine("Not implemented"))
             };
 
             iUiElements = sliders
@@ -150,6 +179,30 @@ namespace evobox {
             renderer.FillRect(bottomSide);
 
             renderer.Present();
+        }
+
+        static SimulationSettings SlidersToSettings() {
+            double jumpmanIdleCost     = sliders[0].sliderValue;
+            double jumpmanSpeedCost    = sliders[1].sliderValue;
+            double jumpmanSizeCost     = sliders[2].sliderValue;
+            double jumpmanMutationRate = sliders[3].sliderValue * 0.01;
+            double foodSpawnRate       = sliders[4].sliderValue * 0.01;
+
+            return new SimulationSettings(
+                    jumpmanIdleCost,
+                    jumpmanSpeedCost,
+                    jumpmanSizeCost,
+                    jumpmanMutationRate,
+                    foodSpawnRate
+                    );
+        }
+
+        static void SettingsToSliders(SimulationSettings settings) {
+            sliders[0].sliderValue = settings.jumpmanIdleCost;
+            sliders[1].sliderValue = settings.jumpmanSpeedCost;
+            sliders[2].sliderValue = settings.jumpmanSizeCost;
+            sliders[3].sliderValue = settings.jumpmanMutationRate / 0.01;
+            sliders[4].sliderValue = settings.foodSpawnRate       / 0.01;
         }
 
         private static void PollEvents() {
