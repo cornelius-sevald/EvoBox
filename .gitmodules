@@ -4,3 +4,5 @@
 [submodule "GnuplotCSharp"]
 	path = lib/GnuplotCSharp
 	url = https://github.com/AwokeKnowing/GnuplotCSharp.git
+[submodule "lib/GnuplotCSharp"]
+	url = https://github.com/cornelius-sevald/GnuplotCSharp.git
