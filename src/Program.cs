@@ -13,6 +13,7 @@ namespace evobox {
 
         private static bool quit = false;
         private static Font font;
+        private static Label label;
         private static Slider slider;
         private static Button button;
 
@@ -36,6 +37,8 @@ namespace evobox {
                     128
                     );
 
+            label  = new Label(3/8.0, 0, 1/4.0, 1/8.0,
+                    "evobox", font);
             slider = new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5);
             button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0,
                     "quit", font, () => quit = true);
@@ -83,6 +86,7 @@ namespace evobox {
             slider.Update(mouseX, mouseY, Globals.viewport);
             button.Update(mouseX, mouseY, Globals.viewport);
 
+            label.Draw(Globals.viewport);
             slider.Draw(Globals.viewport);
             button.Draw(Globals.viewport);
 
