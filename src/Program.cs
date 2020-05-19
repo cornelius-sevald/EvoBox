@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using SDL2;
 
 using evobox.Graphical;
+using evobox.UI;
 
 namespace evobox {
     class Program {
@@ -12,9 +13,9 @@ namespace evobox {
         private const int SCREEN_HEIGHT = 800;
 
         private static bool quit = false;
-        private static Random rand;
-        private static Environment env;
-        private static Minimap minimap;
+        private static Font font;
+        private static Slider slider;
+        private static Button button;
 
         static void Main(string[] args) {
 
@@ -41,23 +42,10 @@ namespace evobox {
             Surface icon = new Surface("EvoBoxIcon.png");
             window.SetWindowIcon(icon);
 
-            // Random number generation.
-            rand = new Random();
+            font = new Font("playfair-display/PlayfairDisplay-Regular.ttf", 128);
 
-            // Create the environment.
-            env = new Environment(30, 30, new Random(rand.Next()));
-
-            // Add a jumpman to the environment with some energy.
-            env.AddObject(
-                    new Jumpman(99, new Random(rand.Next()))
-                    );
-
-            // Add the camera to the environment.
-            Camera cam = new Camera(Vector2.zero, 15, 15, Globals.viewport);
-            env.AddObject(cam);
-
-            // Create the minimap.
-            minimap = new Minimap(env, cam, Globals.mapRect);
+            slider = new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5);
+            button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0, "quit", font, () => quit = true);
         }
 
         private static void MainLoop() {
@@ -82,6 +70,10 @@ namespace evobox {
                         Globals.viewport.H / 5)
                     );
 
+            // Get the mouse coordinates.
+            int mouseX, mouseY;
+            SDL.SDL_GetMouseState(out mouseX, out mouseY);
+
             // Clear the screen.
             renderer.Color = Color.black;
             renderer.Clear();
@@ -90,9 +82,12 @@ namespace evobox {
             Globals.renderer.Color = Color.white;
             renderer.FillRect(Globals.viewport);
 
+            slider.Update(mouseX, mouseY, Globals.viewport);
+            button.Update(mouseX, mouseY, Globals.viewport);
 
-            // Update the environment.
-            env.Update(1.0 / 60.0);
+            slider.Draw(Globals.viewport);
+            button.Draw(Globals.viewport);
+
 
             // The edges outside the viewport.
             // These are needed to cover up entities drawn at the edge of
@@ -127,9 +122,6 @@ namespace evobox {
             renderer.FillRect(rightSide);
             renderer.FillRect(topSide);
             renderer.FillRect(bottomSide);
-
-            // Draw the minimap.
-            minimap.DrawMinimap();
 
             renderer.Present();
         }
