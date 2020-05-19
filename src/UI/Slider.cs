@@ -30,7 +30,7 @@ namespace evobox.UI {
     /// <summary>
     /// A UI slider that can be slid between two values.
     /// </summary>
-    public class Slider {
+    public class Slider : InteractabelUIElement {
         public double x, y, w, h;
         public double sliderValue;
         public double minValue;
@@ -66,8 +66,10 @@ namespace evobox.UI {
         /// <param name="mouseX">The x-position of the mouse</param>
         /// <param name="mouseY">The y-position of the mouse</param>
         /// <param name="panelRect">The rectangle the slider resides in</param>
-        public void Update(int mouseX, int mouseY, Rect panelRect) {
+        public override void Update(Rect panelRect) {
 
+            int mouseX = Globals.mouseX;
+            int mouseY = Globals.mouseY;
             var events = Globals.eventQueue;
 
             double _mouseX = (mouseX - panelRect.X) / (double)panelRect.W;
@@ -103,16 +105,18 @@ namespace evobox.UI {
         /// <summary>
         /// Draw the slider
         /// </summary>
-        /// <param name="dst">The rectangle to draw the slider upon</param>
-        public void Draw(Rect dst) {
+        /// <param name="panelRect">The rectangle the slider resides in</param>
+        public override void Draw(Rect panelRect) {
             var renderer = Globals.renderer;
 
             double n = (sliderValue - minValue) / (maxValue - minValue);
             Rect bobRect = new Rect(
-                    (int)Math.Round((x + w * n - h/2) * dst.W + dst.X),
-                    (int)Math.Round(y * dst.H + dst.Y),
-                    (int)Math.Round(h * dst.H),
-                    (int)Math.Round(h * dst.H)
+                    (int)Math.Round((x + w * n - h/2) * panelRect.W +
+                        panelRect.X),
+                    (int)Math.Round(y * panelRect.H +
+                        panelRect.Y),
+                    (int)Math.Round(h * panelRect.H),
+                    (int)Math.Round(h * panelRect.H)
                     );
 
             Color bobColor = new Color(0XAAAAAADD);
@@ -123,10 +127,10 @@ namespace evobox.UI {
             }
             renderer.Color = Color.black;
             renderer.DrawLine(
-                    (int)(x * dst.W + dst.X),
-                    (int)((y + h / 2) * dst.H + dst.Y),
-                    (int)((x + w) * dst.W + dst.X),
-                    (int)((y + h / 2) * dst.H + dst.Y)
+                    (int)(x * panelRect.W + panelRect.X),
+                    (int)((y + h / 2) * panelRect.H + panelRect.Y),
+                    (int)((x + w) * panelRect.W + panelRect.X),
+                    (int)((y + h / 2) * panelRect.H + panelRect.Y)
                     );
             renderer.Color = bobColor;
             renderer.FillRect(bobRect);

@@ -30,7 +30,7 @@ namespace evobox.UI {
     /// <summary>
     /// A UI button that can execute an action when pressed
     /// </summary>
-    public class Button {
+    public class Button : InteractabelUIElement {
         public double x, y, w, h;
         public ButtonStates State { get; private set; }
         private string text;
@@ -67,11 +67,11 @@ namespace evobox.UI {
         /// <param name="mouseX">The x-position of the mouse</param>
         /// <param name="mouseY">The y-position of the mouse</param>
         /// <param name="panelRect">The rectangle the button resides in</param>
-        public bool Update(int mouseX, int mouseY, Rect panelRect) {
+        public override void Update(Rect panelRect) {
 
+            int mouseX = Globals.mouseX;
+            int mouseY = Globals.mouseY;
             var events = Globals.eventQueue;
-
-            bool hasPressed = false;
 
             double _mouseX = (mouseX - panelRect.X) / (double)panelRect.W;
             double _mouseY = (mouseY - panelRect.Y) / (double)panelRect.H;
@@ -96,30 +96,30 @@ namespace evobox.UI {
             }
             if (State == ButtonStates.Pressed && mouseUp) {
                 action();
-                hasPressed = true;
                 State = ButtonStates.Moused;
             }
-            return hasPressed;
         }
 
         /// <summary>
         /// Draw the button
         /// </summary>
-        /// <param name="dst">The rectangle to draw the button upon</param>
-        public void Draw(Rect dst) {
+        /// <param name="panelRect">The rectangle the button resides in</param>
+        public override void Draw(Rect panelRect) {
             var renderer = Globals.renderer;
 
             Rect buttonRect = new Rect(
-                    (int)Math.Round(x * dst.W + dst.X),
-                    (int)Math.Round(y * dst.H + dst.Y),
-                    (int)Math.Round(w * dst.W),
-                    (int)Math.Round(h * dst.H)
+                    (int)Math.Round(x * panelRect.W + panelRect.X),
+                    (int)Math.Round(y * panelRect.H + panelRect.Y),
+                    (int)Math.Round(w * panelRect.W),
+                    (int)Math.Round(h * panelRect.H)
                     );
             Rect textRect = new Rect(
-                    (int)Math.Round(x * dst.W + dst.X + dst.W * 0.0125),
-                    (int)Math.Round(y * dst.H + dst.Y + dst.H * 0.003125),
-                    (int)Math.Round(w * dst.W * 0.9),
-                    (int)Math.Round(h * dst.H * 0.9)
+                    (int)Math.Round(x * panelRect.W + panelRect.X +
+                        panelRect.W * 0.0125),
+                    (int)Math.Round(y * panelRect.H + panelRect.Y +
+                        panelRect.H * 0.003125),
+                    (int)Math.Round(w * panelRect.W * 0.9),
+                    (int)Math.Round(h * panelRect.H * 0.9)
                     );
 
             Color buttonColor = new Color(0XAAAAAADD);

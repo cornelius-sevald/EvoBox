@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 using SDL2;
 
@@ -13,9 +14,11 @@ namespace evobox {
 
         private static bool quit = false;
         private static Font font;
-        private static Label label;
-        private static Slider slider;
-        private static Button button;
+        private static Label[] labels;
+        private static Slider[] sliders;
+        private static Button[] buttons;
+        private static InteractabelUIElement[] iUiElements;
+        private static UIElement[] uiElements;
 
         static void Main(string[] args) {
 
@@ -47,11 +50,26 @@ namespace evobox {
                     128
                     );
 
-            label  = new Label(3/8.0, 0, 1/4.0, 1/8.0,
-                    "evobox", font);
-            slider = new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5);
-            button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0,
-                    "quit", font, () => quit = true);
+            labels  = new Label[] {
+                new Label(3/8.0, 0, 1/4.0, 1/8.0, "evobox", font),
+            };
+            sliders = new Slider[] {
+                new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5)
+            };
+            buttons = new Button[] {
+                new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0, "quit", font,
+                        () => quit = true)
+            };
+
+            iUiElements = sliders
+                .OfType<InteractabelUIElement>()
+                .Concat(buttons)
+                .ToArray();
+            uiElements = sliders
+                .OfType<UIElement>()
+                .Concat(buttons)
+                .Concat(labels)
+                .ToArray();
         }
 
         private static void MainLoop() {
@@ -77,24 +95,25 @@ namespace evobox {
                     );
 
             // Get the mouse coordinates.
-            int mouseX, mouseY;
-            SDL.SDL_GetMouseState(out mouseX, out mouseY);
+            SDL.SDL_GetMouseState(out Globals.mouseX, out Globals.mouseY);
 
             // Clear the screen.
             renderer.Color = Color.black;
             renderer.Clear();
 
-            // Fill the draw area
+            // Fill the draw area.
             Globals.renderer.Color = Color.white;
             renderer.FillRect(Globals.viewport);
 
-            slider.Update(mouseX, mouseY, Globals.viewport);
-            button.Update(mouseX, mouseY, Globals.viewport);
+            // Update the UI.
+            foreach (InteractabelUIElement ui in iUiElements) {
+                ui.Update(Globals.viewport);
+            }
 
-            label.Draw(Globals.viewport);
-            slider.Draw(Globals.viewport);
-            button.Draw(Globals.viewport);
-
+            // Draw the UI.
+            foreach (UIElement ui in uiElements) {
+                ui.Draw(Globals.viewport);
+            }
 
             // The edges outside the viewport.
             // These are needed to cover up entities drawn at the edge of

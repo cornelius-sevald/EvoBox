@@ -17,6 +17,7 @@ namespace evobox {
 
         public static Window window     = null;
         public static Renderer renderer = null;
+        public static int mouseX, mouseY;
         public static Rect screenRect   = new Rect(0, 0, 0, 0);
         public static Rect viewport     = new Rect(0, 0, 0, 0);
         public static Rect mapRect      = new Rect(0, 0, 0, 0);

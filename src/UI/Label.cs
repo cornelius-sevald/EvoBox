@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 using SDL2;
 
@@ -10,7 +9,7 @@ namespace evobox.UI {
     /// <summary>
     /// A UI text label
     /// </summary>
-    public class Label {
+    public class Label : UIElement {
         public double x, y, w, h;
         private string text;
         private Font font;
@@ -38,15 +37,15 @@ namespace evobox.UI {
         /// <summary>
         /// Draw the label
         /// </summary>
-        /// <param name="dst">The rectangle to draw the label upon</param>
-        public void Draw(Rect dst) {
+        /// <param name="panelRect">The rectangle the button resides in</param>
+        public override void Draw(Rect panelRect) {
             var renderer = Globals.renderer;
 
             Rect labelRect = new Rect(
-                    (int)Math.Round(x * dst.W + dst.X),
-                    (int)Math.Round(y * dst.H + dst.Y),
-                    (int)Math.Round(w * dst.W),
-                    (int)Math.Round(h * dst.H)
+                    (int)Math.Round(x * panelRect.W + panelRect.X),
+                    (int)Math.Round(y * panelRect.H + panelRect.Y),
+                    (int)Math.Round(w * panelRect.W),
+                    (int)Math.Round(h * panelRect.H)
                     );
 
             // Draw the text
