@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using SDL2;
 
 using evobox.Graphical;
+using evobox.UI;
 
 namespace evobox {
     class Program {
@@ -12,7 +13,9 @@ namespace evobox {
         private const int SCREEN_HEIGHT = 800;
 
         private static bool quit = false;
-        private static Simulation sim;
+        private static Font font;
+        private static Slider slider;
+        private static Button button;
 
         static void Main(string[] args) {
 
@@ -29,7 +32,10 @@ namespace evobox {
             Surface icon = new Surface("EvoBoxIcon.png");
             window.SetWindowIcon(icon);
 
-            sim = new Simulation();
+            font = new Font("playfair-display/PlayfairDisplay-Regular.ttf", 128);
+
+            slider = new Slider(3/8.0, 8/24.0, 1/4.0, 1/32.0, 0, 10, 5);
+            button = new Button(3/8.0, 16/24.0, 1/4.0, 1/8.0, "quit", font, () => quit = true);
 
             // Main loop.
             while (!quit) {
@@ -59,6 +65,10 @@ namespace evobox {
                         Globals.viewport.H / 5)
                     );
 
+            // Get the mouse coordinates.
+            int mouseX, mouseY;
+            SDL.SDL_GetMouseState(out mouseX, out mouseY);
+
             // Clear the screen.
             renderer.Color = Color.black;
             renderer.Clear();
@@ -67,9 +77,11 @@ namespace evobox {
             Globals.renderer.Color = Color.white;
             renderer.FillRect(Globals.viewport);
 
+            slider.Update(mouseX, mouseY, Globals.viewport);
+            button.Update(mouseX, mouseY, Globals.viewport);
 
-            // Update the environment.
-            sim.Update(1.0 / 60.0);
+            slider.Draw(Globals.viewport);
+            button.Draw(Globals.viewport);
 
             renderer.Present();
         }

@@ -80,6 +80,13 @@ namespace evobox.Graphical {
         }
 
         /// <summary>
+        /// Draw a line from (x1, y1) to (x2, y2) with the current color.
+        /// </summary>
+        public void DrawLine(int x1, int y1, int x2, int y2) {
+            SDL.SDL_RenderDrawLine(RenPtr, x1, y1, x2, y2);
+        }
+
+        /// <summary>
         /// Draw the outline of a rectangle with the current color.
         /// </summary>
         public void DrawRect(Rect rect) {
