@@ -32,8 +32,8 @@ namespace evobox.UI {
     /// </summary>
     public class Button {
         public double x, y, w, h;
-        public string text;
         public ButtonStates State { get; private set; }
+        private string text;
         private Font font;
         private Action action;
         private Texture textTexture = null;
@@ -47,7 +47,8 @@ namespace evobox.UI {
         /// <param name="h">The height of the button [0 ; 1]</param>
         /// <param name="text">The label of the button</param>
         /// <param name="font">The font of the label</param>
-        /// <param name="action">The action to execute when pressed and released</param>
+        /// <param name="action">The action to execute when
+        /// pressed and released</param>
         public Button(double x, double y, double w, double h,
         string text, Font font, Action action) {
             this.x = x;
@@ -76,9 +77,12 @@ namespace evobox.UI {
             double _mouseY = (mouseY - panelRect.Y) / (double)panelRect.H;
 
             bool hovering = false;
-            bool mouseUp = (events.Any(e => e.type == SDL.SDL_EventType.SDL_MOUSEBUTTONUP));
-            bool mouseDown = (events.Any(e => e.type == SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN));
-            if (_mouseX > x && _mouseX < x + w && _mouseY > y && _mouseY < y + h) {
+            bool mouseUp = (events.Any(e =>
+                        e.type == SDL.SDL_EventType.SDL_MOUSEBUTTONUP));
+            bool mouseDown = (events.Any(e =>
+                        e.type == SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN));
+            if (_mouseX > x && _mouseX < x + w
+                    && _mouseY > y && _mouseY < y + h) {
                 hovering = true;
             }
             if (!hovering) {
@@ -105,10 +109,18 @@ namespace evobox.UI {
         public void Draw(Rect dst) {
             var renderer = Globals.renderer;
 
-            Rect buttonRect = new Rect((int)Math.Round(x * dst.W + dst.X), (int)Math.Round(y * dst.H + dst.Y),
-            (int)Math.Round(w * dst.W), (int)Math.Round(h * dst.H));
-            Rect textRect = new Rect((int)Math.Round(x * dst.W + dst.X + dst.W * 0.0125), (int)Math.Round(y * dst.H + dst.Y + dst.H * 0.003125),
-            (int)Math.Round(w * dst.W * 0.9), (int)Math.Round(h * dst.H * 0.9));
+            Rect buttonRect = new Rect(
+                    (int)Math.Round(x * dst.W + dst.X),
+                    (int)Math.Round(y * dst.H + dst.Y),
+                    (int)Math.Round(w * dst.W),
+                    (int)Math.Round(h * dst.H)
+                    );
+            Rect textRect = new Rect(
+                    (int)Math.Round(x * dst.W + dst.X + dst.W * 0.0125),
+                    (int)Math.Round(y * dst.H + dst.Y + dst.H * 0.003125),
+                    (int)Math.Round(w * dst.W * 0.9),
+                    (int)Math.Round(h * dst.H * 0.9)
+                    );
 
             Color buttonColor = new Color(0XAAAAAADD);
             if (State == ButtonStates.Moused) {
@@ -121,7 +133,10 @@ namespace evobox.UI {
 
             // Draw the text
             if (textTexture == null) {
-                using (Surface textSurf = font.TextSurface(text, Graphics.black)) {
+                using (
+                        Surface textSurf =
+                        font.TextSurface(text, Graphics.black)
+                ) {
                     textTexture = new Texture(renderer, textSurf);
                 }
             }
