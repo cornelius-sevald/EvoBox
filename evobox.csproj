@@ -6,6 +6,10 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+        <DefineConstants>_WINDOWS</DefineConstants>
+    </PropertyGroup>
+
 
     <ItemGroup>
         <None Include="dlls/SDL2_image/libjpeg-9.dll" Link="%(LinkBase)/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
