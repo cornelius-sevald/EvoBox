@@ -77,7 +77,7 @@ namespace evobox {
                         () => SettingsToSliders(SimulationSettings.
                                                 DefaultSettings())),
                 new Button(17/24.0, 40/48.0, 1/6.0, 1/10.0, "start", font,
-                        () => sim = new Simulation())
+                        () => StartSimulation(SlidersToSettings()))
             };
 
             iUiElements = sliders
@@ -150,6 +150,10 @@ namespace evobox {
                 ui.Draw(Globals.viewport);
             }
 
+        }
+
+        static void StartSimulation(SimulationSettings settings) {
+            sim = new Simulation(settings);
         }
 
         static SimulationSettings SlidersToSettings() {

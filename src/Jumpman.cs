@@ -110,7 +110,8 @@ namespace evobox {
             Random cRand   = new Random(rand.Next());
             Genome cGenome = new Genome(genome);
             // Mutate the genome.
-            cGenome.Mutate(MUTATUIN_CHANCE, cRand);
+            double mutationChance = Simulation.Instance.settings.jumpmanMutationRate;
+            cGenome.Mutate(mutationChance, cRand);
 
             // Create the child and add it io the environment.
             Jumpman child = new Jumpman(transform.position, cost, cGenome, cRand);
@@ -123,13 +124,13 @@ namespace evobox {
         /// Calculate the energy used by the jumpman in one second.
         /// </summary>
         private double GetEnergyUsagePerSecond() {
-            const double IDLE_ENERGY_COST  = 5;
-            const double SPEED_ENERGY_COST = 1;
+            double idleEnergyCost  = Simulation.Instance.settings.jumpmanIdleCost;
+            double speedEnergyCost = Simulation.Instance.settings.jumpmanSpeedCost;
+            double sizeEnergyCost  = Simulation.Instance.settings.jumpmanSizeCost;
 
-            return IDLE_ENERGY_COST +
-                SPEED_ENERGY_COST * attr.speed *
-                attr.size * attr.size; // Multiply buy size squared as
-                                       // the size is in 2D.
+            return idleEnergyCost +
+                speedEnergyCost * attr.speed *
+                Math.Pow(attr.size, sizeEnergyCost);
         }
 
         public override void Update(double deltaTime) {
