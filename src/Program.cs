@@ -94,40 +94,6 @@ namespace evobox {
             // Update the environment.
             env.Update(1.0 / 60.0);
 
-            // The edges outside the viewport.
-            // These are needed to cover up entities drawn at the edge of
-            // the viewport.
-            Rect leftSide = new Rect(
-                    0,
-                    0,
-                    (screenRect.W - Globals.viewport.W) / 2,
-                    screenRect.H
-            );
-            Rect rightSide = new Rect(
-                    leftSide.W + Globals.viewport.W,
-                    0,
-                    leftSide.W + 1,
-                    screenRect.H
-            );
-            Rect topSide = new Rect(
-                    0,
-                    0,
-                    screenRect.W,
-                    (screenRect.H - Globals.viewport.H) / 2
-            );
-            Rect bottomSide = new Rect(
-                    0,
-                    topSide.H + Globals.viewport.H,
-                    screenRect.W,
-                    topSide.H + 1
-            );
-
-            renderer.Color = Color.black;
-            renderer.FillRect(leftSide);
-            renderer.FillRect(rightSide);
-            renderer.FillRect(topSide);
-            renderer.FillRect(bottomSide);
-
             // Draw the minimap.
             minimap.DrawMinimap();
 
