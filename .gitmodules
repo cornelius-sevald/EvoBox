@@ -6,3 +6,6 @@
 	url = https://github.com/AwokeKnowing/GnuplotCSharp.git
 [submodule "lib/GnuplotCSharp"]
 	url = https://github.com/cornelius-sevald/GnuplotCSharp.git
+[submodule "lib/Gnuplot-Windows"]
+	path = lib/Gnuplot-Windows
+	url = https://github.com/cornelius-sevald/Gnuplot-Windows.git
