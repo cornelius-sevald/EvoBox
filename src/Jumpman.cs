@@ -15,8 +15,8 @@ namespace evobox {
         const string FRONT_TEXTURE_NAME = "sprites/jumpman_front.png";
         const int Z_INDEX = 0;
         const double MUTATUIN_CHANCE = 0.05;
-        const double PROCREATION_ENERGY_THRESHOLD = 100;
-        const double PROCREATION_ENERGY_COST = 50;
+        const double PROCREATION_ENERGY_THRESHOLD = 300;
+        const double PROCREATION_ENERGY_COST = 100;
 
         public Vector2 velocity;
 
