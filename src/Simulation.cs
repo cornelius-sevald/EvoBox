@@ -6,6 +6,9 @@ namespace evobox {
 
         public static Simulation Instance { get; private set; }
 
+        // Time to 'warm up' the environment before spawning the jumpman.
+        const double WARMUP_TIME = 1;
+
         public SimulationSettings settings { get; private set; }
         private Random rand;
         private Environment env;
@@ -20,6 +23,11 @@ namespace evobox {
 
             // Create the environment.
             this.env = new Environment(30, 30, new Random(rand.Next()));
+
+            // 'Warm up' the environment.
+            for (int i = 0; i < WARMUP_TIME * 60; i++) {
+                this.env.Update(1.0/6.0);
+            }
 
             // Add a jumpman to the environment with some energy.
             this.env.AddObject(
