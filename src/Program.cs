@@ -12,21 +12,9 @@ namespace evobox {
         private const int SCREEN_HEIGHT = 800;
 
         private static bool quit = false;
-        private static Random rand;
-        private static Environment env;
-        private static Minimap minimap;
+        private static Simulation sim;
 
         static void Main(string[] args) {
-
-            Initialize();
-
-            // Main loop.
-            while (!quit) {
-                MainLoop();
-            }
-        }
-
-        private static void Initialize() {
 
             // Initialize graphics, create window & renderer etc.
             Graphics.InitGraphics();
@@ -41,23 +29,12 @@ namespace evobox {
             Surface icon = new Surface("EvoBoxIcon.png");
             window.SetWindowIcon(icon);
 
-            // Random number generation.
-            rand = new Random();
+            sim = new Simulation();
 
-            // Create the environment.
-            env = new Environment(30, 30, new Random(rand.Next()));
-
-            // Add a jumpman to the environment with some energy.
-            env.AddObject(
-                    new Jumpman(99, new Random(rand.Next()))
-                    );
-
-            // Add the camera to the environment.
-            Camera cam = new Camera(Vector2.zero, 15, 15, Globals.viewport);
-            env.AddObject(cam);
-
-            // Create the minimap.
-            minimap = new Minimap(env, cam, Globals.mapRect);
+            // Main loop.
+            while (!quit) {
+                MainLoop();
+            }
         }
 
         private static void MainLoop() {
@@ -92,10 +69,7 @@ namespace evobox {
 
 
             // Update the environment.
-            env.Update(1.0 / 60.0);
-
-            // Draw the minimap.
-            minimap.DrawMinimap();
+            sim.Update(1.0 / 60.0);
 
             renderer.Present();
         }
