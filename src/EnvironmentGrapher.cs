@@ -32,6 +32,10 @@ namespace evobox {
             }
         }
 
+        public void Close() {
+            GnuPlot.Close();
+        }
+
         void PlotNutritionAndJumpmen() {
             GnuPlot.Set("xlabel 'Time [Seconds]'");
             GnuPlot.Set("ylabel 'Total nutrition'");

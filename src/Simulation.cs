@@ -3,6 +3,8 @@ using System.Threading;
 
 using SDL2;
 
+using evobox.Graphical;
+
 namespace evobox {
 
     public sealed class Simulation {
@@ -16,15 +18,17 @@ namespace evobox {
 
         public SimulationSettings settings { get; private set; }
 
+        private bool helperMenu = true;
         private bool running = true;
         private Random rand;
         private Environment env;
         private Minimap minimap;
-        private static EnvironmentTracker envTracker;
-        private static EnvironmentGrapher envGrapher;
+        private Texture helpMenuTex;
+        private EnvironmentTracker envTracker;
+        private EnvironmentGrapher envGrapher;
         // Used to wait between updating the graph.
-        private static object graphMonitor = new object();
-        private static Thread graphThread;
+        private object graphMonitor = new object();
+        private Thread graphThread;
 
         public Simulation(SimulationSettings settings) {
             Instance = this;
@@ -53,6 +57,8 @@ namespace evobox {
             // Create the minimap.
             this.minimap = new Minimap(env, cam, Globals.mapRect);
 
+            this.helpMenuTex = new Texture(Globals.renderer, "sprites/helper_menu.png");
+
             // Create the environment tracker.
             envTracker = new EnvironmentTracker(env);
 
@@ -65,11 +71,15 @@ namespace evobox {
         public void Update(double deltaTime) {
             HandleInput();
 
-            // Update the environment.
-            env.Update(deltaTime);
+            if (!helperMenu) {
+                // Update the environment.
+                env.Update(deltaTime);
 
-            // Draw the minimap.
-            minimap.DrawMinimap();
+                // Draw the minimap.
+                minimap.DrawMinimap();
+            } else {
+                Globals.renderer.RenderTexture(helpMenuTex, Globals.viewport, null);
+            }
 
         }
 
@@ -82,6 +92,9 @@ namespace evobox {
                 Monitor.Pulse(graphMonitor);
             }
             graphThread.Join();
+            envGrapher.Close();
+
+            Instance = null;
         }
 
         private void HandleInput() {
@@ -93,6 +106,10 @@ namespace evobox {
                             // 'n' switches to the next graph.
                             case SDL.SDL_Keycode.SDLK_n:
                                 envGrapher.graphType = envGrapher.graphType.Next();
+                                break;
+                            // Escape toggles a help menu.
+                            case SDL.SDL_Keycode.SDLK_ESCAPE:
+                                helperMenu = !helperMenu;
                                 break;
                             // Space toggles pausing the simulation.
                             case SDL.SDL_Keycode.SDLK_SPACE:

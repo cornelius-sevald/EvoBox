@@ -114,6 +114,20 @@ namespace evobox {
                     case SDL.SDL_EventType.SDL_QUIT:
                         quit = true;
                         break;
+                    // Check if the user has pressed af button.
+                    case SDL.SDL_EventType.SDL_KEYDOWN:
+                        switch (e.key.keysym.sym) {
+                            // 'q' stops the simulation.
+                            case SDL.SDL_Keycode.SDLK_q:
+                                if (sim != null) {
+                                    sim.Stop();
+                                    sim = null;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
                     default:
                         break;
                 }
