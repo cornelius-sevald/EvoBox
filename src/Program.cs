@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 using SDL2;
@@ -20,18 +19,9 @@ namespace evobox {
         private static Button[] buttons;
         private static InteractabelUIElement[] iUiElements;
         private static UIElement[] uiElements;
+        private static Simulation sim = null;
 
         static void Main(string[] args) {
-
-            Initialize();
-
-            // Main loop.
-            while (!quit) {
-                MainLoop();
-            }
-        }
-
-        private static void Initialize() {
 
             // Initialize graphics, create window & renderer etc.
             Graphics.InitGraphics();
@@ -87,7 +77,7 @@ namespace evobox {
                         () => SettingsToSliders(SimulationSettings.
                                                 DefaultSettings())),
                 new Button(17/24.0, 40/48.0, 1/6.0, 1/10.0, "start", font,
-                        () => Console.WriteLine("Not implemented"))
+                        () => sim = new Simulation())
             };
 
             iUiElements = sliders
@@ -99,6 +89,11 @@ namespace evobox {
                 .Concat(buttons)
                 .Concat(labels)
                 .ToArray();
+
+            // Main loop.
+            while (!quit) {
+                MainLoop();
+            }
         }
 
         private static void MainLoop() {
@@ -134,6 +129,17 @@ namespace evobox {
             Globals.renderer.Color = Color.white;
             renderer.FillRect(Globals.viewport);
 
+            if (sim != null) {
+                // Update the environment.
+                sim.Update(1.0 / 60.0);
+            } else {
+                MainMenu();
+            }
+
+            renderer.Present();
+        }
+
+        static void MainMenu() {
             // Update the UI.
             foreach (InteractabelUIElement ui in iUiElements) {
                 ui.Update(Globals.viewport);
@@ -144,41 +150,6 @@ namespace evobox {
                 ui.Draw(Globals.viewport);
             }
 
-            // The edges outside the viewport.
-            // These are needed to cover up entities drawn at the edge of
-            // the viewport.
-            Rect leftSide = new Rect(
-                    0,
-                    0,
-                    (screenRect.W - Globals.viewport.W) / 2,
-                    screenRect.H
-            );
-            Rect rightSide = new Rect(
-                    leftSide.W + Globals.viewport.W,
-                    0,
-                    leftSide.W + 1,
-                    screenRect.H
-            );
-            Rect topSide = new Rect(
-                    0,
-                    0,
-                    screenRect.W,
-                    (screenRect.H - Globals.viewport.H) / 2
-            );
-            Rect bottomSide = new Rect(
-                    0,
-                    topSide.H + Globals.viewport.H,
-                    screenRect.W,
-                    topSide.H + 1
-            );
-
-            renderer.Color = Color.black;
-            renderer.FillRect(leftSide);
-            renderer.FillRect(rightSide);
-            renderer.FillRect(topSide);
-            renderer.FillRect(bottomSide);
-
-            renderer.Present();
         }
 
         static SimulationSettings SlidersToSettings() {

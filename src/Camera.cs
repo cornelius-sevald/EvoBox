@@ -97,9 +97,7 @@ namespace evobox {
         private void Draw(Renderer renderer, Rect drawRect, List<Entity> entities) {
             List<Entity> zEntities = entities.OrderBy(e => e.zIndex).ToList();
             foreach (Entity entity in zEntities) {
-                if (Transform.OverlapAABB(this.transform, entity.transform)) {
-                    Draw(renderer, drawRect, entity);
-                }
+                Draw(renderer, drawRect, entity);
             }
         }
 
