@@ -14,6 +14,7 @@ namespace evobox {
         private const int SCREEN_HEIGHT = 800;
 
         private static bool quit = false;
+        private static Simulation sim;
         private static Font font;
         private static Label[] labels;
         private static Slider[] sliders;
@@ -77,7 +78,7 @@ namespace evobox {
                         () => SettingsToSliders(SimulationSettings.
                                                 DefaultSettings())),
                 new Button(17/24.0, 40/48.0, 1/6.0, 1/10.0, "start", font,
-                        () => Console.WriteLine("Not implemented"))
+                        () => StartSimulation(SlidersToSettings()))
             };
 
             iUiElements = sliders
@@ -129,6 +130,16 @@ namespace evobox {
             Globals.renderer.Color = Color.white;
             renderer.FillRect(Globals.viewport);
 
+            if (sim != null) {
+                sim.Update(1.0/60.0);
+            } else {
+                MainMenu();
+            }
+
+            renderer.Present();
+        }
+
+        static void MainMenu() {
             // Update the UI.
             foreach (InteractabelUIElement ui in iUiElements) {
                 ui.Update(Globals.viewport);
@@ -138,8 +149,10 @@ namespace evobox {
             foreach (UIElement ui in uiElements) {
                 ui.Draw(Globals.viewport);
             }
+        }
 
-            renderer.Present();
+        static void StartSimulation(SimulationSettings settings) {
+            sim = new Simulation(settings);
         }
 
         static SimulationSettings SlidersToSettings() {
