@@ -1,7 +1,5 @@
 using System;
 
-using SDL2;
-
 using evobox.Graphical;
 
 namespace evobox.UI {

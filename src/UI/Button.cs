@@ -64,8 +64,6 @@ namespace evobox.UI {
         /// <summary>
         /// Update the button
         /// </summary>
-        /// <param name="mouseX">The x-position of the mouse</param>
-        /// <param name="mouseY">The y-position of the mouse</param>
         /// <param name="panelRect">The rectangle the button resides in</param>
         public override void Update(Rect panelRect) {
 

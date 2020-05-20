@@ -63,8 +63,6 @@ namespace evobox.UI {
         /// <summary>
         /// Update the slider
         /// </summary>
-        /// <param name="mouseX">The x-position of the mouse</param>
-        /// <param name="mouseY">The y-position of the mouse</param>
         /// <param name="panelRect">The rectangle the slider resides in</param>
         public override void Update(Rect panelRect) {
 
