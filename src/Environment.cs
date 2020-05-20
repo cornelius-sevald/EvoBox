@@ -54,6 +54,7 @@ namespace evobox {
         public int timeScale = 1;
 
         private Random rand;
+        private Texture terrainTexture;
 
         private List<SceneObject> addPool;
         private List<SceneObject> removePool;
@@ -80,7 +81,7 @@ namespace evobox {
 
             // Create a tiling ground texture.
             var renderer = Globals.renderer;
-            Texture terrainTexture = new Texture(renderer, "sprites/terrain_grass.png");
+            terrainTexture = new Texture(renderer, "sprites/terrain_grass.png");
             // The dimentions of the terrain texture.
             int _tx, _ty;
             terrainTexture.Query(out _tx, out _ty);
